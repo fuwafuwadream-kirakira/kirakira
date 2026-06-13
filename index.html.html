@@ -1,0 +1,1465 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ふわふわどりーむ・ドリームシミュレーター</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap');
+        
+        body {
+            font-family: 'Kosugi+Maru', sans-serif;
+            background: linear-gradient(135deg, #fce4ec, #f3e5f5, #e8eaf6, #e0f2f1, #fffde7);
+            background-size: 400% 400%;
+            animation: gradientBG 20s ease infinite;
+            overflow: hidden;
+            transition: background 1s ease;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* 浮遊スピード用のCSS変数 */
+        :root {
+            --float-duration: 6s;
+        }
+
+        /* ふんわり浮遊アニメーション */
+        .float-gentle {
+            animation: float var(--float-duration) ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-18px) rotate(1deg); }
+        }
+
+        /* ゆらゆら動く飾り */
+        .sway-slow {
+            animation: sway 7s ease-in-out infinite alternate;
+        }
+        @keyframes sway {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(15px, -15px) rotate(10deg); }
+        }
+
+        .sway-reverse {
+            animation: swayRev 8s ease-in-out infinite alternate;
+        }
+        @keyframes swayRev {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(-15px, -10px) rotate(-8deg); }
+        }
+
+        /* ガーランドライトのやさしい点滅 */
+        .twinkle {
+            animation: twinkle 2.5s ease-in-out infinite;
+        }
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.4; transform: scale(0.85); filter: drop-shadow(0 0 2px rgba(255,235,59,0.4)); }
+            50% { opacity: 1; transform: scale(1.15); filter: drop-shadow(0 0 12px rgba(255,235,59,0.9)); }
+        }
+
+        /* 背景の虹のゆっくりした浮遊 */
+        .rainbow-float {
+            animation: rainbowFloat 10s ease-in-out infinite;
+        }
+        @keyframes rainbowFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-12px) rotate(4deg); }
+        }
+
+        .rainbow-float-2 {
+            animation: rainbowFloat2 12s ease-in-out infinite;
+        }
+        @keyframes rainbowFloat2 {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(10px) rotate(-5deg); }
+        }
+
+        /* 背景リボンのひらひらモーション */
+        .ribbon-drift {
+            animation: ribbonDrift 7s ease-in-out infinite;
+        }
+        @keyframes ribbonDrift {
+            0%, 100% { transform: translateY(0px) translateX(0px) rotate(-6deg); }
+            50% { transform: translateY(-20px) translateX(12px) rotate(6deg); }
+        }
+
+        .ribbon-drift-2 {
+            animation: ribbonDrift2 9s ease-in-out infinite;
+        }
+        @keyframes ribbonDrift2 {
+            0%, 100% { transform: translateY(0px) translateX(0px) rotate(8deg); }
+            50% { transform: translateY(-15px) translateX(-10px) rotate(-8deg); }
+        }
+
+        /* 雲のたゆたう動き */
+        .cloud-left {
+            animation: cloudMoveLeft 26s linear infinite;
+        }
+        .cloud-right {
+            animation: cloudMoveRight 30s linear infinite;
+        }
+        @keyframes cloudMoveLeft {
+            0% { transform: translateX(-8%); }
+            50% { transform: translateX(8%); }
+            100% { transform: translateX(-8%); }
+        }
+        @keyframes cloudMoveRight {
+            0% { transform: translateX(8%); }
+            50% { transform: translateX(-8%); }
+            100% { transform: translateX(8%); }
+        }
+
+        /* 画像を彩る魔法のオーラ */
+        .glow-aura-card {
+            box-shadow: 0 0 60px rgba(243, 229, 245, 0.8), 0 0 100px rgba(252, 228, 236, 0.6);
+            animation: auraPulse 6s ease-in-out infinite;
+            transition: border-radius 0.5s ease;
+        }
+        @keyframes auraPulse {
+            0%, 100% { box-shadow: 0 0 50px rgba(243, 229, 245, 0.7), 0 0 90px rgba(252, 228, 236, 0.5); }
+            50% { box-shadow: 0 0 80px rgba(244, 143, 177, 0.9), 0 0 130px rgba(224, 242, 241, 0.8); }
+        }
+
+        /* カプセル型ネオンバー */
+        .neon-capsule-bar {
+            background: rgba(255, 255, 255, 0.8);
+            border: 2px solid rgba(225, 190, 231, 0.9);
+            box-shadow: 0 0 20px rgba(225, 190, 231, 0.7), inset 0 0 10px rgba(255, 255, 255, 0.6);
+            transition: all 0.3s ease;
+        }
+        .neon-capsule-bar:focus-within {
+            border-color: rgba(244, 143, 177, 0.9);
+            box-shadow: 0 0 30px rgba(244, 143, 177, 0.9), 0 4px 15px rgba(0, 0, 0, 0.05);
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        /* ふわふわ浮かぶテキスト・スタンプ吹き出し */
+        .bubble-msg {
+            animation: bubbleUp 4.5s ease-out forwards;
+        }
+        @keyframes bubbleUp {
+            0% { transform: translateY(60px) scale(0.5) rotate(0deg); opacity: 0; }
+            10% { transform: translateY(0px) scale(1.15) rotate(6deg); opacity: 1; }
+            15% { transform: scale(1) rotate(-6deg); }
+            85% { opacity: 1; }
+            100% { transform: translateY(-320px) scale(0.6) rotate(25deg); opacity: 0; }
+        }
+
+        /* スクロールバー非表示 */
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* スタンプボタンのスタイリング */
+        .stamp-tray {
+            position: relative;
+            padding: 12px 14px;
+            border-radius: 999px;
+            background:
+                radial-gradient(circle at 12% 18%, rgba(255, 255, 255, 0.95) 0 5px, transparent 6px),
+                radial-gradient(circle at 84% 24%, rgba(255, 255, 255, 0.9) 0 4px, transparent 5px),
+                linear-gradient(135deg, rgba(255, 240, 248, 0.9), rgba(239, 246, 255, 0.86), rgba(255, 253, 231, 0.82));
+            border: 2px solid rgba(255, 196, 221, 0.85);
+            box-shadow:
+                0 14px 35px rgba(244, 143, 177, 0.28),
+                0 0 22px rgba(255, 255, 255, 0.9) inset;
+            backdrop-filter: blur(12px);
+        }
+        .stamp-tray::before,
+        .stamp-tray::after {
+            content: "✦";
+            position: absolute;
+            color: #ff8ac2;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.95), 0 0 14px rgba(255, 128, 171, 0.8);
+            animation: trayTwinkle 1.8s ease-in-out infinite;
+            pointer-events: none;
+        }
+        .stamp-tray::before {
+            left: 14px;
+            top: -10px;
+            font-size: 18px;
+        }
+        .stamp-tray::after {
+            right: 16px;
+            bottom: -9px;
+            font-size: 15px;
+            animation-delay: -0.8s;
+        }
+        @keyframes trayTwinkle {
+            0%, 100% { opacity: 0.45; transform: scale(0.8) rotate(0deg); }
+            50% { opacity: 1; transform: scale(1.2) rotate(18deg); }
+        }
+        .stamp-btn {
+            position: relative;
+            isolation: isolate;
+            width: 52px;
+            height: 52px;
+            background:
+                radial-gradient(circle at 32% 22%, rgba(255, 255, 255, 0.98) 0 9px, transparent 10px),
+                linear-gradient(145deg, rgba(255, 255, 255, 0.97), rgba(255, 226, 241, 0.92) 48%, rgba(225, 245, 254, 0.9));
+            border: 2px solid rgba(255, 178, 200, 0.95);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow:
+                0 7px 16px rgba(244, 143, 177, 0.25),
+                0 0 0 4px rgba(255, 255, 255, 0.55) inset,
+                0 0 18px rgba(255, 255, 255, 0.85);
+            overflow: visible;
+        }
+        .stamp-btn::before {
+            content: "";
+            position: absolute;
+            inset: -5px;
+            border-radius: 999px;
+            background: conic-gradient(from 45deg, #ff80ab, #fff59d, #80deea, #ce93d8, #ff80ab);
+            opacity: 0.55;
+            filter: blur(8px);
+            z-index: -1;
+            animation: stampAura 4s linear infinite;
+        }
+        .stamp-btn::after {
+            content: "✧";
+            position: absolute;
+            right: -3px;
+            top: -8px;
+            color: #fff176;
+            font-size: 14px;
+            line-height: 1;
+            text-shadow: 0 0 5px #fff, 0 0 10px #ff80ab;
+            animation: stampSparkle 1.7s ease-in-out infinite;
+        }
+        @keyframes stampAura {
+            to { transform: rotate(360deg); }
+        }
+        @keyframes stampSparkle {
+            0%, 100% { opacity: 0.45; transform: scale(0.72) rotate(0deg); }
+            50% { opacity: 1; transform: scale(1.18) rotate(24deg); }
+        }
+        .stamp-btn:hover {
+            transform: translateY(-4px) scale(1.18) rotate(8deg);
+            background:
+                radial-gradient(circle at 32% 22%, #fff 0 10px, transparent 11px),
+                linear-gradient(145deg, #ffffff, #ffd7eb 48%, #d7f7ff);
+            border-color: #ff80ab;
+            box-shadow:
+                0 14px 30px rgba(244, 143, 177, 0.48),
+                0 0 0 4px rgba(255, 255, 255, 0.7) inset,
+                0 0 28px rgba(255, 241, 118, 0.8);
+        }
+        .stamp-btn:active {
+            transform: scale(0.85) rotate(-5deg);
+        }
+        .stamp-tray .stamp-btn::after {
+            display: none;
+        }
+        .stamp-tray .stamp-btn:nth-of-type(1)::after { content: ""; }
+        .stamp-tray .stamp-btn:nth-of-type(1) { background: radial-gradient(circle at 32% 22%, #fff 0 10px, transparent 11px), linear-gradient(145deg, #fff8d8, #ffd7b5); }
+        .stamp-tray .stamp-btn:nth-of-type(2)::after { content: ""; }
+        .stamp-tray .stamp-btn:nth-of-type(2) { background: radial-gradient(circle at 32% 22%, #fff 0 10px, transparent 11px), linear-gradient(145deg, #ffffff, #ffd8ef); }
+        .stamp-tray .stamp-btn:nth-of-type(3)::after { content: ""; }
+        .stamp-tray .stamp-btn:nth-of-type(3) { background: radial-gradient(circle at 32% 22%, #fff 0 10px, transparent 11px), linear-gradient(145deg, #fffbd4, #dff7ff); }
+        .stamp-tray .stamp-btn:nth-of-type(4)::after { content: ""; }
+        .stamp-tray .stamp-btn:nth-of-type(4) { background: radial-gradient(circle at 32% 22%, #fff 0 10px, transparent 11px), linear-gradient(145deg, #f4e9ff, #dfecff); }
+        .stamp-tray .stamp-btn:nth-of-type(5)::after { content: ""; }
+        .stamp-tray .stamp-btn:nth-of-type(5) { background: radial-gradient(circle at 32% 22%, #fff 0 10px, transparent 11px), linear-gradient(145deg, #fff6c7, #ffe2aa); }
+        .stamp-tray .stamp-btn:nth-of-type(6) { order: 8; }
+        .stamp-tray .stamp-btn:nth-of-type(6)::after { content: ""; }
+        .stamp-tray .stamp-btn:nth-of-type(6) { background: radial-gradient(circle at 32% 22%, #fff 0 10px, transparent 11px), linear-gradient(145deg, #ffe0f0, #fff1b8); }
+        .stamp-tray .stamp-btn:nth-of-type(7) { order: 6; }
+        .stamp-tray .stamp-btn:nth-of-type(7)::after { content: ""; }
+        .stamp-tray .stamp-btn:nth-of-type(7) { background: radial-gradient(circle at 32% 22%, #fff 0 10px, transparent 11px), linear-gradient(145deg, #ffe0ef, #ffc1da); }
+        .stamp-tray .stamp-btn:nth-of-type(8) { order: 7; }
+        .stamp-tray .stamp-btn:nth-of-type(8)::after { content: ""; }
+        .stamp-tray .stamp-btn:nth-of-type(8) { background: radial-gradient(circle at 32% 22%, #fff 0 10px, transparent 11px), linear-gradient(145deg, #e7fbff, #eadcff); }
+        .stamp-tray .stamp-btn svg {
+            filter: drop-shadow(0 3px 4px rgba(216, 27, 96, 0.18));
+        }
+    
+        @media (max-width: 640px){
+            .stamp-tray{
+                width: min(100%, 340px);
+                padding: 10px 12px;
+                gap: 8px !important;
+            }
+            .stamp-btn{
+                width: 48px !important;
+                height: 48px !important;
+            }
+            #togglePanelBtn{
+                max-width: calc(100vw - 24px);
+                white-space: nowrap;
+            }
+            #controlPanel{
+                width: min(280px, calc(100vw - 24px)) !important;
+                max-height: calc(100svh - 82px);
+                overflow-y: auto;
+                padding: 14px !important;
+            }
+            .mobile-settings-fix{
+                position: fixed !important;
+                top: max(8px, env(safe-area-inset-top)) !important;
+                right: 12px !important;
+                left: auto !important;
+                max-width: calc(100vw - 24px);
+                z-index: 60 !important;
+            }
+        }
+
+</style>
+</head>
+<body class="h-screen w-screen flex flex-col items-center justify-between relative p-4 select-none">
+
+    <!-- キラキラを描くCanvas -->
+    <canvas id="particleCanvas" class="absolute inset-0 z-0 pointer-events-none"></canvas>
+
+    <!-- タッチ・操作判定用の透明レイヤー -->
+    <div id="interactionZone" class="absolute inset-0 z-10 cursor-pointer"></div>
+
+    <!-- 背景装飾1: 左上のパステルリボン -->
+    <div class="absolute left-6 top-1/4 z-0 pointer-events-none opacity-80 ribbon-drift">
+        <svg class="w-16 h-16" viewBox="0 0 100 100" fill="none">
+            <path d="M50,30 C15,0 5,45 50,30" fill="#f8bbd0" stroke="#f48fb1" stroke-width="2"/>
+            <path d="M50,30 C85,0 95,45 50,30" fill="#f8bbd0" stroke="#f48fb1" stroke-width="2"/>
+            <circle cx="50" cy="30" r="7" fill="#fff" stroke="#f48fb1" stroke-width="2"/>
+            <path d="M45,35 L30,65 M55,35 L70,65" stroke="#f48fb1" stroke-width="3" stroke-linecap="round"/>
+        </svg>
+    </div>
+
+    <!-- 背景装飾2: 右上の虹と雲 -->
+    <div class="absolute right-10 top-1/4 z-0 pointer-events-none opacity-85 rainbow-float" style="animation-delay: -3s;">
+        <svg class="w-24 h-20" viewBox="0 0 120 100" fill="none">
+            <path d="M20,60 A40,40 0 0,1 100,60" stroke="#f48fb1" stroke-width="5" fill="none" />
+            <path d="M25,60 A35,35 0 0,1 95,60" stroke="#fff59d" stroke-width="5" fill="none" />
+            <path d="M30,60 A30,30 0 0,1 90,60" stroke="#80deea" stroke-width="5" fill="none" />
+            <path d="M10,65 C10,55 25,50 35,60 C40,50 55,50 60,60 C65,55 75,55 75,65 Z" fill="#fff" opacity="0.95" />
+            <path d="M50,65 C50,55 65,50 75,60 C80,50 95,50 100,60 C105,55 115,55 115,65 Z" fill="#fff" opacity="0.95" />
+        </svg>
+    </div>
+
+    <!-- 背景装飾3: 左下のパステル虹 -->
+    <div class="absolute left-10 bottom-1/4 z-0 pointer-events-none opacity-80 rainbow-float-2" style="animation-delay: -5s;">
+        <svg class="w-20 h-16" viewBox="0 0 120 100" fill="none" style="transform: scaleX(-1);">
+            <path d="M20,60 A40,40 0 0,1 100,60" stroke="#ce93d8" stroke-width="4.5" fill="none" />
+            <path d="M25,60 A35,35 0 0,1 95,60" stroke="#ff8a80" stroke-width="4.5" fill="none" />
+            <path d="M30,60 A30,30 0 0,1 90,60" stroke="#80cbc4" stroke-width="4.5" fill="none" />
+            <circle cx="20" cy="60" r="10" fill="#fff" opacity="0.9" />
+            <circle cx="100" cy="60" r="12" fill="#fff" opacity="0.95" />
+        </svg>
+    </div>
+
+    <!-- 背景装飾4: 右下のパステルリボン -->
+    <div class="absolute right-8 bottom-1/4 z-0 pointer-events-none opacity-85 ribbon-drift-2" style="animation-delay: -2s;">
+        <svg class="w-14 h-14" viewBox="0 0 100 100" fill="none">
+            <path d="M50,30 C15,5 5,40 50,30" fill="#fce4ec" stroke="#f48fb1" stroke-width="2"/>
+            <path d="M50,30 C85,5 95,40 50,30" fill="#fce4ec" stroke="#f48fb1" stroke-width="2"/>
+            <circle cx="50" cy="30" r="6" fill="#fff" stroke="#f48fb1" stroke-width="2"/>
+            <path d="M46,34 L25,70 M54,34 L75,70" stroke="#f48fb1" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>
+    </div>
+
+    <!-- 追加のゆらゆら装飾: 左下のちいさなお月様 -->
+    <div class="absolute left-24 bottom-16 z-0 pointer-events-none opacity-65 sway-slow" style="animation-delay: -1.5s;">
+        <svg class="w-10 h-10" viewBox="0 0 100 100">
+            <path d="M30,20 A35,35 0 1,0 80,70 A28,28 0 1,1 30,20 Z" fill="#ffe082" stroke="#ffa000" stroke-width="2" />
+        </svg>
+    </div>
+
+    <!-- 追加のゆらゆら装飾: 右上のお星様 -->
+    <div class="absolute right-24 top-16 z-0 pointer-events-none opacity-60 sway-reverse" style="animation-delay: -4s;">
+        <svg class="w-9 h-9" viewBox="0 0 100 100">
+            <path d="M50,10 L58,38 L88,38 L64,54 L72,82 L50,65 L28,82 L36,54 L12,38 L42,38 Z" fill="#fff59d" stroke="#fbc02d" stroke-width="2" />
+        </svg>
+    </div>
+
+    <!-- 上部の光るガーランドライト -->
+    <div class="absolute top-0 left-0 right-0 z-20 flex justify-between px-4 md:px-12 pointer-events-none">
+        <svg class="w-full max-w-5xl mx-auto h-24" viewBox="0 0 1000 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 0,15 Q 250,70 500,15 Q 750,70 1000,15" stroke="#ffe082" stroke-width="2" stroke-dasharray="6,6" opacity="0.5" fill="none" />
+            <path d="M 0,15 Q 250,70 500,15 Q 750,70 1000,15" stroke="#e1bee7" stroke-width="2.5" fill="none" />
+            <circle cx="50" cy="24" r="8" fill="#fff59d" class="twinkle" style="animation-delay: 0.1s" />
+            <circle cx="120" cy="36" r="9" fill="#f48fb1" class="twinkle" style="animation-delay: 0.4s" />
+            <polygon points="190,46 194,36 204,34 196,27 198,17 189,23 180,17 182,27 174,34 184,36" fill="#ffeb3b" class="twinkle" style="animation-delay: 0.8s" />
+            <circle cx="260" cy="48" r="8" fill="#80deea" class="twinkle" style="animation-delay: 1.2s" />
+            <circle cx="330" cy="45" r="9" fill="#e1bee7" class="twinkle" style="animation-delay: 0.3s" />
+            <circle cx="400" cy="38" r="10" fill="#fff59d" class="twinkle" style="animation-delay: 0.2s" />
+            <polygon points="470,28 474,18 484,16 476,9 478,0 469,5 460,0 462,9 454,16 464,18" fill="#ff80ab" class="twinkle" style="animation-delay: 1.5s" />
+            <circle cx="540" cy="25" r="8" fill="#f48fb1" class="twinkle" style="animation-delay: 1.6s" />
+            <polygon points="610,32 614,22 624,20 616,13 618,3 609,9 600,3 602,13 594,20 604,22" fill="#ce93d8" class="twinkle" style="animation-delay: 0.6s" />
+            <circle cx="680" cy="43" r="9" fill="#b2dfdb" class="twinkle" style="animation-delay: 1.0s" />
+            <circle cx="750" cy="49" r="8" fill="#fff59d" class="twinkle" style="animation-delay: 1.4s" />
+            <circle cx="820" cy="44" r="10" fill="#f48fb1" class="twinkle" style="animation-delay: 1.8s" />
+            <polygon points="890,34 894,24 904,22 896,15 898,5 889,11 880,5 882,15 874,22 884,24" fill="#ffeb3b" class="twinkle" style="animation-delay: 2.2s" />
+            <circle cx="950" cy="22" r="7" fill="#ffe0b2" class="twinkle" style="animation-delay: 2.5s" />
+        </svg>
+    </div>
+
+    <!-- UI情報パネル -->
+    <div class="z-20 text-center mt-12 bg-white/70 backdrop-blur-md px-6 py-2.5 rounded-full border border-purple-200/50 shadow-md pointer-events-none">
+        <p class="text-xs md:text-sm text-purple-600 font-bold tracking-wider">
+           ✨🪄 画面をタッチしたりスタンプをおすと、リボンや虹のシャワーがはじけるよ ✨🌙 
+        </p>
+    </div>
+
+    <!-- メイン「ふわふわどりーむ」カードエリア -->
+    <div class="z-20 my-auto flex flex-col items-center justify-center float-gentle max-w-full px-4 relative">
+        
+        <!-- 浮かび上がるメッセージ吹き出しのコンテナ -->
+        <div id="bubbleContainer" class="absolute inset-0 pointer-events-none z-30 overflow-visible flex flex-col items-center justify-end"></div>
+
+        <!-- 丸みをおびた極上ストーリーフレーム -->
+        <div id="dreamContainer" class="relative w-80 h-80 sm:w-96 sm:h-96 md:w-[450px] md:h-[450px] flex items-center justify-center rounded-3xl overflow-hidden glow-aura-card bg-white/30 p-2 border-4 border-white/60 transition-all duration-700">
+            
+            <!-- カード周囲を飾るお供リボンと虹たち -->
+            <div class="absolute -left-5 -top-5 z-20 w-12 h-12 sway-slow pointer-events-none">
+                <svg viewBox="0 0 100 100">
+                    <path d="M50,30 C20,10 10,40 50,30" fill="#ff8a80" stroke="#e91e63" stroke-width="2"/>
+                    <path d="M50,30 C80,10 90,40 50,30" fill="#ff8a80" stroke="#e91e63" stroke-width="2"/>
+                    <circle cx="50" cy="30" r="5" fill="#fff" stroke="#e91e63" stroke-width="2"/>
+                </svg>
+            </div>
+            <div class="absolute -right-6 -bottom-4 z-20 w-12 h-12 sway-reverse pointer-events-none" style="animation-delay: -1s;">
+                <svg viewBox="0 0 100 100">
+                    <path d="M20,50 A30,30 0 0,1 80,50" stroke="#ffeb3b" stroke-width="4" fill="none" />
+                    <path d="M25,50 A25,25 0 0,1 75,50" stroke="#ff80ab" stroke-width="4" fill="none" />
+                </svg>
+            </div>
+
+            <!-- insuta.png メイン画像 -->
+            <img 
+                id="mainImage"
+                src="insuta.png" 
+                alt="ふわふわどりーむ" 
+                class="w-full h-full object-cover rounded-2xl select-none pointer-events-none transition-all duration-700"
+                onerror="handleImageError()"
+            />
+
+            <!-- エラー時のフォールバック表示 -->
+            <div id="fallback-content" class="hidden absolute inset-0 flex-col items-center justify-center bg-gradient-to-b from-purple-50 to-pink-50 text-center p-6 rounded-2xl">
+                <p class="text-purple-400 font-bold text-lg mb-2">ドリーム画像読み込み中...</p>
+                <p class="text-xs text-gray-400">画像ファイル名が「insuta.png」になっているか、同じフォルダにあることを確認してください🪄 </p>
+            </div>
+        </div>
+
+        <!-- インタラクティブなネオンカプセル型メッセージバー -->
+        <div class="w-full max-w-sm mt-6 px-2">
+            <div class="neon-capsule-bar flex items-center justify-between px-4 py-2.5 rounded-full backdrop-blur-md relative z-30">
+                <input 
+                    type="text" 
+                    id="messageInput" 
+                    placeholder="ふわふわメッセージを送る..." 
+                    class="bg-transparent text-purple-700 placeholder-purple-300 focus:outline-none w-full text-xs sm:text-sm font-semibold pr-2"
+                />
+                <button 
+                    onclick="sendBubbleMessage()" 
+                    class="bg-gradient-to-r from-pink-400 to-purple-400 hover:from-pink-500 hover:to-purple-500 text-white font-bold px-4 py-1.5 rounded-full text-xs sm:text-sm transition-all active:scale-95 shadow-sm"
+                >
+                    送信 ✨
+                </button>
+            </div>
+        </div>
+
+        <!-- クイックスタンプリアクション (極上かわいくデザイン一新 🐱🐰🌙) -->
+        <div class="stamp-tray flex space-x-2 mt-4 z-30 flex-wrap justify-center gap-y-2">
+            <!-- 🐱 ねこちゃんスタンプ (おめめ、チーク、リボンつき) -->
+            <button onclick="sendQuickStamp('cat')" class="stamp-btn p-1.5 rounded-full shadow-md w-11 h-11 flex items-center justify-center" title="ねこちゃん">
+                <svg class="w-9 h-9" viewBox="0 0 100 100">
+                    <!-- 耳 -->
+                    <path d="M22,35 L38,15 L45,35 Z" fill="#ffb74d" stroke="#e65100" stroke-width="2" />
+                    <path d="M78,35 L62,15 L55,35 Z" fill="#ffb74d" stroke="#e65100" stroke-width="2" />
+                    <!-- 顔 -->
+                    <ellipse cx="50" cy="52" rx="34" ry="28" fill="#fff9db" stroke="#e65100" stroke-width="2" />
+                    <!-- うるうるおめめ -->
+                    <circle cx="38" cy="48" r="4.5" fill="#3e2723" />
+                    <circle cx="36.5" cy="46" r="1.5" fill="#fff" />
+                    <circle cx="62" cy="48" r="4.5" fill="#3e2723" />
+                    <circle cx="60.5" cy="46" r="1.5" fill="#fff" />
+                    <!-- ほっぺ -->
+                    <ellipse cx="26" cy="56" rx="5" ry="3" fill="#ff4081" opacity="0.6" />
+                    <ellipse cx="74" cy="56" rx="5" ry="3" fill="#ff4081" opacity="0.6" />
+                    <!-- おくち -->
+                    <path d="M46,55 Q50,58 54,55" stroke="#3e2723" stroke-width="2" fill="none" stroke-linecap="round" />
+                    <!-- ミニピンクリボン -->
+                    <g transform="translate(42, 68) scale(0.35)">
+                        <path d="M10,20 C-10,0 -10,40 10,20" fill="#ff4081" />
+                        <path d="M30,20 C50,0 50,40 30,20" fill="#ff4081" />
+                        <circle cx="20" cy="20" r="5" fill="#fff" />
+                    </g>
+                </svg>
+            </button>
+
+            <!-- 🐰 うさぎちゃんスタンプ (ながいお耳、ピンクのリボン、うるうるおめめ) -->
+            <button onclick="sendQuickStamp('bunny')" class="stamp-btn p-1.5 rounded-full shadow-md w-11 h-11 flex items-center justify-center" title="うさぎちゃん">
+                <svg class="w-9 h-9" viewBox="0 0 100 100">
+                    <!-- ながい耳 -->
+                    <path d="M32,32 Q20,-5 40,15 Z" fill="#fff" stroke="#d81b60" stroke-width="2" />
+                    <path d="M68,32 Q80,-5 60,15 Z" fill="#fff" stroke="#d81b60" stroke-width="2" />
+                    <!-- 内耳ピンク -->
+                    <path d="M30,28 Q22,4 35,17 Z" fill="#f8bbd0" />
+                    <path d="M70,28 Q78,4 65,17 Z" fill="#f8bbd0" />
+                    <!-- お顔 -->
+                    <circle cx="50" cy="52" r="28" fill="#fff" stroke="#d81b60" stroke-width="2" />
+                    <!-- うるうるおめめ -->
+                    <circle cx="39" cy="49" r="4.5" fill="#3e2723" />
+                    <circle cx="37.5" cy="47" r="1.5" fill="#fff" />
+                    <circle cx="61" cy="49" r="4.5" fill="#3e2723" />
+                    <circle cx="59.5" cy="47" r="1.5" fill="#fff" />
+                    <!-- ほっぺ -->
+                    <ellipse cx="28" cy="56" rx="5" ry="3" fill="#ff4081" opacity="0.6" />
+                    <ellipse cx="72" cy="56" rx="5" ry="3" fill="#ff4081" opacity="0.6" />
+                    <!-- おくち -->
+                    <path d="M47,56 Q50,59 53,56" stroke="#3e2723" stroke-width="1.8" fill="none" />
+                    <!-- 耳元のりぼん -->
+                    <g transform="translate(18, 25) scale(0.35) rotate(-15)">
+                        <path d="M10,20 C-10,0 -10,40 10,20" fill="#ff80ab" />
+                        <path d="M30,20 C50,0 50,40 30,20" fill="#ff80ab" />
+                        <circle cx="20" cy="20" r="4" fill="#fff" />
+                    </g>
+                </svg>
+            </button>
+
+            <!-- 🌙 お月様スタンプ (NEW: 雲のベッドで星を抱っこするお月様) -->
+            <button onclick="sendQuickStamp('moon')" class="stamp-btn p-1.5 rounded-full shadow-md w-11 h-11 flex items-center justify-center" title="お月様">
+                <svg class="w-9 h-9" viewBox="0 0 100 100">
+                    <!-- もこもこ雲のベッド -->
+                    <path d="M20,70 C15,65 15,55 25,52 C28,42 42,40 50,46 C58,38 72,40 78,50 C88,52 88,62 82,70 Z" fill="#fff" stroke="#90caf9" stroke-width="1.5" opacity="0.95" />
+                    <!-- お月様ベース -->
+                    <path d="M40,25 A28,28 0 1,0 78,65 A22,22 0 1,1 40,25 Z" fill="#fff176" stroke="#fbc02d" stroke-width="2" stroke-linejoin="round" />
+                    <!-- 眠そうなおめめ -->
+                    <path d="M44,48 Q47,52 50,48" stroke="#5d4037" stroke-width="1.8" fill="none" stroke-linecap="round" />
+                    <ellipse cx="42" cy="52" rx="3.5" ry="2" fill="#ff8a80" />
+                    <!-- 抱っこしているちいさな星 -->
+                    <g transform="translate(48, 50) scale(0.25)">
+                        <path d="M50,10 L60,38 L88,38 L66,54 L74,82 L50,65 L26,82 L34,54 L12,38 L40,38 Z" fill="#ff8a80" stroke="#ff1744" stroke-width="2" />
+                    </g>
+                </svg>
+            </button>
+
+            <!-- ☕ ココアカップスタンプ (NEW: くまマシュマロがひょっこり浮かぶココア) -->
+            <button onclick="sendQuickStamp('cup')" class="stamp-btn p-1.5 rounded-full shadow-md w-11 h-11 flex items-center justify-center" title="ココアカップ">
+                <svg class="w-9 h-9" viewBox="0 0 100 100">
+                    <!-- カップ本体 -->
+                    <rect x="25" y="46" width="50" height="36" rx="9" fill="#b39ddb" stroke="#7e57c2" stroke-width="2.5" />
+                    <!-- 持ち手 -->
+                    <path d="M75,54 Q85,54 85,63 Q85,71 75,71" stroke="#7e57c2" stroke-width="2" fill="none" />
+                    <!-- ココアの液体 & もこもこ泡 -->
+                    <ellipse cx="50" cy="46" rx="23" ry="5" fill="#5d4037" stroke="#7e57c2" stroke-width="1.5" />
+                    <!-- 浮かんでいるくまマシュマロ🧸 -->
+                    <g transform="translate(14, 4)">
+                        <!-- くま耳 -->
+                        <circle cx="28" cy="30" r="5" fill="#fff" stroke="#7e57c2" stroke-width="1.5" />
+                        <circle cx="44" cy="30" r="5" fill="#fff" stroke="#7e57c2" stroke-width="1.5" />
+                        <circle cx="28" cy="30" r="2.5" fill="#f8bbd0" />
+                        <circle cx="44" cy="30" r="2.5" fill="#f8bbd0" />
+                        <!-- くま頭 -->
+                        <ellipse cx="36" cy="38" rx="11" ry="9" fill="#fff" stroke="#7e57c2" stroke-width="2" />
+                        <!-- くまお顔 -->
+                        <circle cx="32" cy="37" r="1.5" fill="#3e2723" />
+                        <circle cx="40" cy="37" r="1.5" fill="#3e2723" />
+                        <!-- 鼻まわり -->
+                        <ellipse cx="36" cy="41" rx="3.5" ry="2.5" fill="#e0e0e0" />
+                        <circle cx="36" cy="40" r="1" fill="#3e2723" />
+                        <ellipse cx="29" cy="41" rx="2" ry="1.2" fill="#ff4081" opacity="0.6" />
+                        <ellipse cx="43" cy="41" rx="2" ry="1.2" fill="#ff4081" opacity="0.6" />
+                    </g>
+                    <!-- カップを飾るパステルピンクのリボン -->
+                    <g transform="translate(35, 54) scale(0.38)">
+                        <path d="M10,20 C-10,0 -10,40 10,20 Z" fill="#ff80ab" stroke="#c2185b" stroke-width="2" />
+                        <path d="M30,20 C50,0 50,40 30,20 Z" fill="#ff80ab" stroke="#c2185b" stroke-width="2" />
+                        <circle cx="20" cy="20" r="6" fill="#fff" stroke="#c2185b" stroke-width="2" />
+                    </g>
+                </svg>
+            </button>
+
+            <!-- 🌟 きらきら星スタンプ (うるうるおめめのお星様) -->
+            <button onclick="sendQuickStamp('star_special')" class="stamp-btn p-1.5 rounded-full shadow-md w-11 h-11 flex items-center justify-center" title="きらきら星">
+                <svg class="w-9 h-9" viewBox="0 0 100 100">
+                    <path d="M50,10 L60,38 L88,38 L66,54 L74,82 L50,65 L26,82 L34,54 L12,38 L40,38 Z" fill="#ffe082" stroke="#ff8f00" stroke-width="2" stroke-linejoin="round" />
+                    <!-- うるうるおめめ -->
+                    <circle cx="42" cy="46" r="3.5" fill="#3e2723" />
+                    <circle cx="41" cy="44.5" r="1" fill="#fff" />
+                    <circle cx="58" cy="46" r="3.5" fill="#3e2723" />
+                    <circle cx="57" cy="44.5" r="1" fill="#fff" />
+                    <!-- ほっぺ -->
+                    <circle cx="34" cy="52" r="3" fill="#ff1744" opacity="0.6" />
+                    <circle cx="66" cy="52" r="3" fill="#ff1744" opacity="0.6" />
+                    <path d="M48,51 Q50,54 52,51" stroke="#3e2723" stroke-width="1.5" fill="none" />
+                </svg>
+            </button>
+
+            <!-- 🪄 魔法のステッキスタンプ (プリンセス風リボン＆ハートの杖) -->
+            <button onclick="sendQuickStamp('wand')" class="stamp-btn p-1.5 rounded-full shadow-md w-11 h-11 flex items-center justify-center" title="ステッキ">
+                <svg class="w-9 h-9" viewBox="0 0 100 100" style="transform: rotate(-10deg);">
+                    <!-- 持ち手棒 -->
+                    <rect x="46" y="46" width="8" height="44" rx="4" fill="#f8bbd0" stroke="#d81b60" stroke-width="1.8" />
+                    <!-- キラキラジュエルのハートトップ -->
+                    <path d="M50,42 C50,42 32,24 32,15 C32,5 45,5 50,15 C55,5 68,5 68,15 C68,24 50,42 50,42 Z" fill="#ff80ab" stroke="#d81b60" stroke-width="2" />
+                    <!-- 内側のハートジュエル -->
+                    <path d="M50,34 C50,34 38,22 38,16 C38,9 47,9 50,16 C53,9 62,9 62,16 C62,22 50,34 50,34 Z" fill="#fff" opacity="0.5" />
+                    <!-- ぷっくりゴールドリボン -->
+                    <g transform="translate(35, 38) scale(0.38)">
+                        <path d="M10,20 C-10,0 -10,40 10,20 Z" fill="#ffe082" stroke="#ff8f00" stroke-width="2" />
+                        <path d="M30,20 C50,0 50,40 30,20 Z" fill="#ffe082" stroke="#ff8f00" stroke-width="2" />
+                        <circle cx="20" cy="20" r="6" fill="#fff" stroke="#ff8f00" stroke-width="2" />
+                    </g>
+                </svg>
+            </button>
+
+            <button onclick="sendQuickStamp('heart_note')" class="stamp-btn p-1.5 rounded-full shadow-md w-11 h-11 flex items-center justify-center" title="ハート">
+                <svg class="w-9 h-9" viewBox="0 0 100 100">
+                    <path d="M50,78 C50,78 18,55 18,32 C18,17 36,12 50,29 C64,12 82,17 82,32 C82,55 50,78 50,78 Z" fill="#ff80ab" stroke="#d81b60" stroke-width="3" />
+                    <path d="M38,31 C33,27 27,29 26,35" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity="0.8" />
+                    <circle cx="38" cy="48" r="3.5" fill="#3e2723" />
+                    <circle cx="62" cy="48" r="3.5" fill="#3e2723" />
+                    <path d="M45,57 Q50,61 55,57" stroke="#3e2723" stroke-width="2" fill="none" stroke-linecap="round" />
+                    <circle cx="30" cy="55" r="3" fill="#fff" opacity="0.7" />
+                    <circle cx="70" cy="55" r="3" fill="#fff" opacity="0.7" />
+                </svg>
+            </button>
+
+            <button onclick="sendQuickStamp('ribbon_note')" class="stamp-btn p-1.5 rounded-full shadow-md w-11 h-11 flex items-center justify-center" title="リボン">
+                <svg class="w-9 h-9" viewBox="0 0 100 100">
+                    <path d="M48,48 C18,20 8,70 45,58 Z" fill="#ce93d8" stroke="#8e24aa" stroke-width="3" />
+                    <path d="M52,48 C82,20 92,70 55,58 Z" fill="#80deea" stroke="#00acc1" stroke-width="3" />
+                    <circle cx="50" cy="53" r="11" fill="#fff59d" stroke="#f9a825" stroke-width="3" />
+                    <path d="M40,64 L30,83" stroke="#f48fb1" stroke-width="5" stroke-linecap="round" />
+                    <path d="M60,64 L70,83" stroke="#f48fb1" stroke-width="5" stroke-linecap="round" />
+                    <circle cx="45" cy="50" r="2.5" fill="#fff" opacity="0.9" />
+                    <circle cx="56" cy="48" r="2" fill="#fff" opacity="0.9" />
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- 右上: ふわふわコントロールパネル -->
+    <div class="absolute right-4 top-4 md:top-6 z-30 flex flex-col items-end mobile-settings-fix">
+        <button id="togglePanelBtn" class="bg-white/85 hover:bg-white text-purple-600 font-bold px-4 py-2 rounded-full border border-purple-200 shadow-md backdrop-blur-md flex items-center space-x-2 text-xs md:text-sm transition-all active:scale-95">
+            <span>☁️ 設定 & 切り替え</span>
+            <svg id="arrowIcon" class="w-4 h-4 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+        </button>
+
+        <div id="controlPanel" class="hidden mt-2 w-72 bg-white/95 backdrop-blur-md p-5 rounded-2xl border border-pink-200 shadow-xl flex flex-col space-y-4 text-xs md:text-sm text-purple-700 transition-all duration-300">
+            <!-- サウンド設定 -->
+            <div class="flex items-center justify-between">
+                <span class="font-bold">🎵 魔法の音色</span>
+                <button id="soundBtn" onclick="toggleSound()" class="bg-emerald-100 text-emerald-800 border border-emerald-200 font-bold px-4 py-1.5 rounded-full transition-colors">
+                    ON 🔊
+                </button>
+            </div>
+
+            <!-- 浮遊スピード調整 -->
+            <div class="border-t border-purple-100 pt-3">
+                <span class="font-bold block mb-1.5">⏳ ふわふわスピード</span>
+                <input type="range" id="speedSlider" min="2" max="12" value="6" step="1" oninput="changeFloatSpeed(this.value)" class="w-full accent-purple-500 cursor-pointer">
+                <div class="flex justify-between text-[10px] text-purple-400 px-1">
+                    <span>はやい</span>
+                    <span>ゆったり</span>
+                </div>
+            </div>
+
+            <!-- エフェクト切り替え -->
+            <div class="border-t border-purple-100 pt-3">
+                <span class="font-bold block mb-1.5">✨ キラキラエフェクト</span>
+                <select id="effectSelect" onchange="changeEffect(this.value)" class="w-full p-2 rounded-lg border border-purple-200 bg-white font-medium text-purple-700 outline-none">
+                    <option value="mix">ぜんぶミックス 💫</option>
+                    <option value="ribbon_rainbow">リボン＆レインボー 🎀🌈</option>
+                    <option value="star">きらきら星＆三日月 🌟🌙</option>
+                    <option value="heart">ぷっくりハート ❤️</option>
+                    <option value="bubble">うるうるシャボン玉 🫧</option>
+                </select>
+            </div>
+
+            <!-- 夢色テーマ切り替え -->
+            <div class="border-t border-purple-100 pt-3">
+                <span class="font-bold block mb-1.5">🎨 夢色テーマカラー</span>
+                <div class="flex justify-between space-x-1">
+                    <button onclick="setTheme('default')" class="w-6 h-6 rounded-full border border-white shadow-sm bg-gradient-to-r from-pink-300 to-purple-300" title="デフォルト"></button>
+                    <button onclick="setTheme('pink')" class="w-6 h-6 rounded-full border border-white shadow-sm bg-gradient-to-r from-pink-400 to-red-200" title="チェリーピンク"></button>
+                    <button onclick="setTheme('lavender')" class="w-6 h-6 rounded-full border border-white shadow-sm bg-gradient-to-r from-purple-400 to-indigo-300" title="ラベンダー"></button>
+                    <button onclick="setTheme('sky')" class="w-6 h-6 rounded-full border border-white shadow-sm bg-gradient-to-r from-cyan-300 to-emerald-200" title="アクアスカイ"></button>
+                    <button onclick="setTheme('gold')" class="w-6 h-6 rounded-full border border-white shadow-sm bg-gradient-to-r from-amber-300 to-amber-100" title="ドリームゴールド"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 下部の雲レイヤー -->
+    <!-- アニメーション & サウンド＆システムスクリプト -->
+    <script>
+        const canvas = document.getElementById('particleCanvas');
+        const ctx = canvas.getContext('2d');
+        const interactionZone = document.getElementById('interactionZone');
+        const dreamContainer = document.getElementById('dreamContainer');
+        const mainImage = document.getElementById('mainImage');
+        const togglePanelBtn = document.getElementById('togglePanelBtn');
+        const controlPanel = document.getElementById('controlPanel');
+        const arrowIcon = document.getElementById('arrowIcon');
+        const messageInput = document.getElementById('messageInput');
+        const bubbleContainer = document.getElementById('bubbleContainer');
+
+        let soundEnabled = true;
+        let audioCtx = null;
+        let activeEffect = 'mix';
+
+        // 各種スタンプ用の吹き出しアニメーション時の超絶可愛いSVGデータ
+        const stampSVGData = {
+            cat: `<svg class="w-14 h-14" viewBox="0 0 100 100">
+                    <ellipse cx="50" cy="52" rx="34" ry="28" fill="#fff9db" stroke="#e65100" stroke-width="2.5" />
+                    <path d="M22,35 L38,15 L45,35 Z" fill="#ffb74d" stroke="#e65100" stroke-width="2" />
+                    <path d="M78,35 L62,15 L55,35 Z" fill="#ffb74d" stroke="#e65100" stroke-width="2" />
+                    <circle cx="38" cy="48" r="4.5" fill="#3e2723" />
+                    <circle cx="36.5" cy="46" r="1.5" fill="#fff" />
+                    <circle cx="62" cy="48" r="4.5" fill="#3e2723" />
+                    <circle cx="60.5" cy="46" r="1.5" fill="#fff" />
+                    <ellipse cx="26" cy="56" rx="5" ry="3" fill="#ff4081" opacity="0.6" />
+                    <ellipse cx="74" cy="56" rx="5" ry="3" fill="#ff4081" opacity="0.6" />
+                    <path d="M46,55 Q50,58 54,55" stroke="#3e2723" stroke-width="2" fill="none" />
+                  </svg>`,
+            bunny: `<svg class="w-14 h-14" viewBox="0 0 100 100">
+                    <path d="M32,32 Q20,-5 40,15 Z" fill="#fff" stroke="#d81b60" stroke-width="2.5" />
+                    <path d="M68,32 Q80,-5 60,15 Z" fill="#fff" stroke="#d81b60" stroke-width="2.5" />
+                    <path d="M30,28 Q22,4 35,17 Z" fill="#f8bbd0" />
+                    <path d="M70,28 Q78,4 65,17 Z" fill="#f8bbd0" />
+                    <circle cx="50" cy="52" r="28" fill="#fff" stroke="#d81b60" stroke-width="2.5" />
+                    <circle cx="39" cy="49" r="4.5" fill="#3e2723" />
+                    <circle cx="37.5" cy="47" r="1.5" fill="#fff" />
+                    <circle cx="61" cy="49" r="4.5" fill="#3e2723" />
+                    <circle cx="59.5" cy="47" r="1.5" fill="#fff" />
+                    <ellipse cx="28" cy="56" rx="5" ry="3" fill="#ff4081" opacity="0.6" />
+                    <ellipse cx="72" cy="56" rx="5" ry="3" fill="#ff4081" opacity="0.6" />
+                    <path d="M47,56 Q50,59 53,56" stroke="#3e2723" stroke-width="1.8" fill="none" />
+                  </svg>`,
+            moon: `<svg class="w-14 h-14" viewBox="0 0 100 100">
+                    <!-- 雲のベッド -->
+                    <path d="M20,70 C15,65 15,55 25,52 C28,42 42,40 50,46 C58,38 72,40 78,50 C88,52 88,62 82,70 Z" fill="#fff" stroke="#90caf9" stroke-width="1.8" opacity="0.95" />
+                    <!-- お月様 -->
+                    <path d="M40,25 A28,28 0 1,0 78,65 A22,22 0 1,1 40,25 Z" fill="#fff176" stroke="#fbc02d" stroke-width="2.5" />
+                    <!-- 眠そうなおめめ -->
+                    <path d="M44,48 Q47,52 50,48" stroke="#5d4037" stroke-width="2" fill="none" stroke-linecap="round" />
+                    <ellipse cx="42" cy="52" rx="3.5" ry="2" fill="#ff8a80" />
+                    <!-- 星っこ -->
+                    <g transform="translate(48, 50) scale(0.25)">
+                        <path d="M50,10 L60,38 L88,38 L66,54 L74,82 L50,65 L26,82 L34,54 L12,38 L40,38 Z" fill="#ff8a80" stroke="#ff1744" stroke-width="2.5" />
+                    </g>
+                  </svg>`,
+            cup: `<svg class="w-14 h-14" viewBox="0 0 100 100">
+                    <!-- カップ -->
+                    <rect x="25" y="46" width="50" height="36" rx="9" fill="#b39ddb" stroke="#7e57c2" stroke-width="2.5" />
+                    <path d="M75,54 Q85,54 85,63 Q85,71 75,71" stroke="#7e57c2" stroke-width="2" fill="none" />
+                    <ellipse cx="50" cy="46" rx="23" ry="5" fill="#5d4037" stroke="#7e57c2" stroke-width="1.5" />
+                    <!-- くまマシュマロ🧸 -->
+                    <g transform="translate(14, 4)">
+                        <circle cx="28" cy="30" r="5" fill="#fff" stroke="#7e57c2" stroke-width="1.5" />
+                        <circle cx="44" cy="30" r="5" fill="#fff" stroke="#7e57c2" stroke-width="1.5" />
+                        <circle cx="28" cy="30" r="2.5" fill="#f8bbd0" />
+                        <circle cx="44" cy="30" r="2.5" fill="#f8bbd0" />
+                        <ellipse cx="36" cy="38" rx="11" ry="9" fill="#fff" stroke="#7e57c2" stroke-width="2" />
+                        <circle cx="32" cy="37" r="1.5" fill="#3e2723" />
+                        <circle cx="40" cy="37" r="1.5" fill="#3e2723" />
+                        <ellipse cx="36" cy="41" rx="3.5" ry="2.5" fill="#e0e0e0" />
+                        <circle cx="36" cy="40" r="1" fill="#3e2723" />
+                        <ellipse cx="29" cy="41" rx="2" ry="1.2" fill="#ff4081" opacity="0.6" />
+                        <ellipse cx="43" cy="41" rx="2" ry="1.2" fill="#ff4081" opacity="0.6" />
+                    </g>
+                    <!-- カップリボン -->
+                    <g transform="translate(35, 54) scale(0.38)">
+                        <path d="M10,20 C-10,0 -10,40 10,20 Z" fill="#ff80ab" stroke="#c2185b" stroke-width="2" />
+                        <path d="M30,20 C50,0 50,40 30,20 Z" fill="#ff80ab" stroke="#c2185b" stroke-width="2" />
+                        <circle cx="20" cy="20" r="6" fill="#fff" stroke="#c2185b" stroke-width="2" />
+                    </g>
+                  </svg>`,
+            star_special: `<svg class="w-12 h-12" viewBox="0 0 100 100">
+                    <path d="M50,10 L60,38 L88,38 L66,54 L74,82 L50,65 L26,82 L34,54 L12,38 L40,38 Z" fill="#ffe082" stroke="#ff8f00" stroke-width="2" />
+                    <circle cx="42" cy="46" r="3.5" fill="#3e2723" />
+                    <circle cx="58" cy="46" r="3.5" fill="#3e2723" />
+                    <circle cx="34" cy="52" r="3" fill="#ff1744" opacity="0.6" />
+                    <circle cx="66" cy="52" r="3" fill="#ff1744" opacity="0.6" />
+                  </svg>`,
+            wand: `<svg class="w-12 h-12" viewBox="0 0 100 100" style="transform: rotate(-10deg);">
+                    <rect x="46" y="46" width="8" height="44" rx="4" fill="#f8bbd0" stroke="#d81b60" stroke-width="1.8" />
+                    <path d="M50,42 C50,42 32,24 32,15 C32,5 45,5 50,15 C55,5 68,5 68,15 C68,24 50,42 50,42 Z" fill="#ff80ab" stroke="#d81b60" stroke-width="2" />
+                    <g transform="translate(35, 38) scale(0.38)">
+                        <path d="M10,20 C-10,0 -10,40 10,20 Z" fill="#ffe082" stroke="#ff8f00" stroke-width="2" />
+                        <path d="M30,20 C50,0 50,40 30,20 Z" fill="#ffe082" stroke="#ff8f00" stroke-width="2" />
+                        <circle cx="20" cy="20" r="6" fill="#fff" />
+                    </g>
+                  </svg>`,
+            heart_note: `<svg class="w-14 h-14" viewBox="0 0 100 100">
+                    <path d="M50,78 C50,78 18,55 18,32 C18,17 36,12 50,29 C64,12 82,17 82,32 C82,55 50,78 50,78 Z" fill="#ff80ab" stroke="#d81b60" stroke-width="3" />
+                    <path d="M38,31 C33,27 27,29 26,35" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity="0.8" />
+                    <circle cx="38" cy="48" r="3.5" fill="#3e2723" />
+                    <circle cx="62" cy="48" r="3.5" fill="#3e2723" />
+                    <path d="M45,57 Q50,61 55,57" stroke="#3e2723" stroke-width="2" fill="none" stroke-linecap="round" />
+                    <circle cx="30" cy="55" r="3" fill="#fff" opacity="0.7" />
+                    <circle cx="70" cy="55" r="3" fill="#fff" opacity="0.7" />
+                  </svg>`,
+            ribbon_note: `<svg class="w-14 h-14" viewBox="0 0 100 100">
+                    <path d="M48,48 C18,20 8,70 45,58 Z" fill="#ce93d8" stroke="#8e24aa" stroke-width="3" />
+                    <path d="M52,48 C82,20 92,70 55,58 Z" fill="#80deea" stroke="#00acc1" stroke-width="3" />
+                    <circle cx="50" cy="53" r="11" fill="#fff59d" stroke="#f9a825" stroke-width="3" />
+                    <path d="M40,64 L30,83" stroke="#f48fb1" stroke-width="5" stroke-linecap="round" />
+                    <path d="M60,64 L70,83" stroke="#f48fb1" stroke-width="5" stroke-linecap="round" />
+                    <circle cx="45" cy="50" r="2.5" fill="#fff" opacity="0.9" />
+                    <circle cx="56" cy="48" r="2" fill="#fff" opacity="0.9" />
+                  </svg>`
+        };
+
+        // 画面サイズ調整
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        // パネルトグル
+        togglePanelBtn.addEventListener('click', () => {
+            const isHidden = controlPanel.classList.toggle('hidden');
+            arrowIcon.style.transform = isHidden ? 'rotate(0deg)' : 'rotate(180deg)';
+        });
+
+        // キーボード「Enter」での送信
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendBubbleMessage();
+            }
+        });
+
+        // メッセージ吹き出しの送信処理
+        function sendBubbleMessage() {
+            const text = messageInput.value.trim();
+            if (!text) return;
+
+            const bubble = document.createElement('div');
+            bubble.className = "bubble-msg absolute bg-white/90 border-2 border-pink-200/60 text-purple-700 font-bold px-4 py-2 rounded-2xl shadow-md text-xs sm:text-sm whitespace-nowrap z-50 pointer-events-none flex items-center space-x-1.5";
+            
+            // リボンや虹も含めた夢かわ絵文字
+            const decors = ['🎀', '🌈', '🧸', '🪄', '🍭', '🍬', '☁️', '⭐', '🌙', '🦄'];
+            const decor = decors[Math.floor(Math.random() * decors.length)];
+            bubble.innerHTML = `<span>${decor}</span> <span>${text}</span>`;
+            
+            // ランダムな水平位置
+            const randomX = (Math.random() - 0.5) * 220;
+            bubble.style.left = `calc(50% + ${randomX}px)`;
+            bubble.style.bottom = '80px';
+
+            bubbleContainer.appendChild(bubble);
+
+            // アニメーション終了後に要素を削除
+            setTimeout(() => {
+                bubble.remove();
+            }, 4500);
+
+            // 送信と同時にキラキラパーティクルをド派手に弾けさせる
+            const rect = messageInput.getBoundingClientRect();
+            for (let i = 0; i < 20; i++) {
+                particles.push(new Sparkle(rect.left + rect.width/2, rect.top, 'heart'));
+                particles.push(new Sparkle(rect.left + rect.width/2, rect.top, 'star'));
+                particles.push(new Sparkle(rect.left + rect.width/2, rect.top, 'bubble'));
+                particles.push(new Sparkle(rect.left + rect.width/2, rect.top, 'ribbon'));
+                particles.push(new Sparkle(rect.left + rect.width/2, rect.top, 'rainbow'));
+            }
+
+            messageInput.value = '';
+            playMagicalChime();
+        }
+
+        // クイックスタンプ送信
+        function sendQuickStamp(stampKey) {
+            const bubble = document.createElement('div');
+            bubble.className = "bubble-msg absolute z-50 pointer-events-none flex items-center justify-center filter drop-shadow(0 4px 12px rgba(0,0,0,0.12))";
+            
+            if (stampSVGData[stampKey]) {
+                bubble.innerHTML = stampSVGData[stampKey];
+            } else {
+                bubble.innerText = '💖';
+            }
+
+            const randomX = (Math.random() - 0.5) * 200;
+            bubble.style.left = `calc(50% + ${randomX}px)`;
+            bubble.style.bottom = '80px';
+
+            bubbleContainer.appendChild(bubble);
+
+            setTimeout(() => {
+                bubble.remove();
+            }, 4500);
+
+            // リアクションエフェクト増量（リボンや虹も追加）
+            const rect = document.getElementById('dreamContainer').getBoundingClientRect();
+            for (let i = 0; i < 12; i++) {
+                particles.push(new Sparkle(rect.left + rect.width/2 + randomX, rect.bottom - 40, 'star'));
+                particles.push(new Sparkle(rect.left + rect.width/2 + randomX, rect.bottom - 40, 'bubble'));
+                particles.push(new Sparkle(rect.left + rect.width/2 + randomX, rect.bottom - 40, 'ribbon'));
+                particles.push(new Sparkle(rect.left + rect.width/2 + randomX, rect.bottom - 40, 'rainbow'));
+            }
+
+            playStampNote(stampKey);
+        }
+
+        // サウンドのトグル
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            const btn = document.getElementById('soundBtn');
+            if (soundEnabled) {
+                btn.innerText = 'ON 🔊';
+                btn.className = 'bg-emerald-100 text-emerald-800 border border-emerald-200 font-bold px-4 py-1.5 rounded-full transition-colors';
+                initAudioContext();
+            } else {
+                btn.innerText = 'OFF 🔇';
+                btn.className = 'bg-rose-100 text-rose-800 border border-rose-200 font-bold px-4 py-1.5 rounded-full transition-colors';
+            }
+        }
+
+        // 音声エンジン
+        function initAudioContext() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playMagicalChime() {
+            if (!soundEnabled) return;
+            initAudioContext();
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+
+            playTone(0);
+            setTimeout(() => playTone(120), 80);
+        }
+
+        function playStampNote(stampKey) {
+            if (!soundEnabled) return;
+            initAudioContext();
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+
+            const stampNotes = {
+                cat: 523.25,
+                bunny: 587.33,
+                moon: 659.25,
+                cup: 698.46,
+                star_special: 783.99,
+                heart_note: 880.00,
+                ribbon_note: 987.77,
+                wand: 1046.50
+            };
+
+            playMelodyTone(stampNotes[stampKey] || 523.25, 0);
+        }
+
+        function playMelodyTone(freq, startOffset) {
+            const startTime = audioCtx.currentTime + startOffset;
+            const partials = [
+                { ratio: 1, gain: 0.12, type: 'sine', length: 0.55 },
+                { ratio: 2, gain: 0.035, type: 'triangle', length: 0.38 },
+                { ratio: 3, gain: 0.018, type: 'sine', length: 0.28 }
+            ];
+
+            partials.forEach((partial) => {
+                const osc = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                const endTime = startTime + partial.length;
+
+                osc.type = partial.type;
+                osc.frequency.setValueAtTime(freq * partial.ratio, startTime);
+                osc.frequency.exponentialRampToValueAtTime(freq * partial.ratio * 1.008, startTime + 0.08);
+
+                gainNode.gain.setValueAtTime(0.001, startTime);
+                gainNode.gain.linearRampToValueAtTime(partial.gain, startTime + 0.018);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, endTime);
+
+                osc.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                osc.start(startTime);
+                osc.stop(endTime + 0.03);
+            });
+
+            const sparkleDelay = 0.055;
+            const sparkle = audioCtx.createOscillator();
+            const sparkleGain = audioCtx.createGain();
+            const sparkleStart = startTime + sparkleDelay;
+            const sparkleEnd = sparkleStart + 0.18;
+
+            sparkle.type = 'sine';
+            sparkle.frequency.setValueAtTime(freq * 4, sparkleStart);
+            sparkle.frequency.exponentialRampToValueAtTime(freq * 5.02, sparkleEnd);
+
+            sparkleGain.gain.setValueAtTime(0.001, sparkleStart);
+            sparkleGain.gain.linearRampToValueAtTime(0.028, sparkleStart + 0.012);
+            sparkleGain.gain.exponentialRampToValueAtTime(0.001, sparkleEnd);
+
+            sparkle.connect(sparkleGain);
+            sparkleGain.connect(audioCtx.destination);
+            sparkle.start(sparkleStart);
+            sparkle.stop(sparkleEnd + 0.02);
+        }
+
+        function playTone(delayMs) {
+            const osc = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+
+            osc.type = 'sine';
+            const notes = [523.25, 587.33, 659.25, 783.99, 880.00, 1046.50, 1174.66, 1318.51, 1567.98];
+            const freq = notes[Math.floor(Math.random() * notes.length)];
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+
+            gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+            gainNode.gain.linearRampToValueAtTime(0.12, audioCtx.currentTime + 0.04);
+            gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.9);
+
+            osc.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+
+            osc.start();
+            osc.stop(audioCtx.currentTime + 1.0);
+        }
+
+        
+        // スマホ用オーディオ解除
+        ['touchstart','click'].forEach(evt=>{
+            document.addEventListener(evt,()=>{
+                try{
+                    initAudioContext();
+                    if(audioCtx && audioCtx.state==='suspended'){audioCtx.resume();}
+                }catch(e){}
+            },{once:true});
+        });
+
+
+        // 画像のエラーハンドリング
+        function handleImageError() {
+            mainImage.style.display = 'none';
+            document.getElementById('fallback-content').style.display = 'flex';
+        }
+
+        function changeFloatSpeed(val) {
+            document.documentElement.style.setProperty('--float-duration', `${val}s`);
+        }
+
+        function changeEffect(val) {
+            activeEffect = val;
+        }
+
+        // テーマプリセット
+        const themePresets = {
+            default: {
+                bg: 'linear-gradient(135deg, #fce4ec, #f3e5f5, #e8eaf6, #e0f2f1, #fffde7)',
+                colors: ['rgba(244, 143, 177, 0.8)', 'rgba(206, 147, 216, 0.8)', 'rgba(128, 222, 234, 0.8)', 'rgba(255, 245, 157, 0.9)', 'rgba(255, 204, 188, 0.8)']
+            },
+            pink: {
+                bg: 'linear-gradient(135deg, #ffcdd2, #f8bbd0, #fce4ec, #fff9db)',
+                colors: ['#ff80ab', '#ff4081', '#f50057', '#ff8a80', '#ffd54f']
+            },
+            lavender: {
+                bg: 'linear-gradient(135deg, #ede7f6, #d1c4e9, #b39ddb, #e8eaf6)',
+                colors: ['#b39ddb', '#9575cd', '#7e57c2', '#80deea', '#e040fb']
+            },
+            sky: {
+                bg: 'linear-gradient(135deg, #e0f7fa, #b2ebf2, #e0f2f1, #e8f5e9)',
+                colors: ['#4dd0e1', '#26c6da', '#00bcd4', '#80cbc4', '#a7ffeb']
+            },
+            gold: {
+                bg: 'linear-gradient(135deg, #fffde7, #fff9c4, #fff59d, #ffe0b2)',
+                colors: ['#ffe082', '#ffd54f', '#ffca28', '#ffb300', '#fff59d']
+            }
+        };
+
+        let currentPalette = [...themePresets.default.colors];
+
+        function setTheme(themeKey) {
+            const preset = themePresets[themeKey];
+            if (preset) {
+                document.body.style.background = preset.bg;
+                document.body.style.backgroundSize = '400% 400%';
+                currentPalette = [...preset.colors];
+            }
+        }
+
+        // --- パーティクル描画エンジン ---
+        const particles = [];
+        const backgroundBubbles = []; 
+        const airDusts = [];
+
+        class AmbientBubble {
+            constructor() {
+                this.reset();
+                this.y = Math.random() * canvas.height;
+            }
+
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = canvas.height + Math.random() * 80;
+                // シャボン玉、お月様、お星様、ちいさなリボン、お空の虹をランダムに
+                const types = ['bubble', 'bubble', 'star', 'moon', 'mini-ribbon', 'mini-rainbow'];
+                this.type = types[Math.floor(Math.random() * types.length)];
+                
+                this.size = Math.random() * 22 + 6;
+                this.speed = Math.random() * 0.4 + 0.15;
+                this.wobbleSpeed = Math.random() * 0.01 + 0.003;
+                this.wobbleDistance = Math.random() * 15 + 5;
+                this.angle = Math.random() * Math.PI * 2;
+                this.color = currentPalette[Math.floor(Math.random() * currentPalette.length)];
+                this.rotation = Math.random() * Math.PI * 2;
+                this.rotSpeed = (Math.random() - 0.5) * 0.015;
+            }
+
+            update() {
+                this.y -= this.speed;
+                this.angle += this.wobbleSpeed;
+                this.rotation += this.rotSpeed;
+                this.currentX = this.x + Math.sin(this.angle) * this.wobbleDistance;
+
+                if (this.y < -this.size - 25) {
+                    this.reset();
+                }
+            }
+
+            draw() {
+                ctx.save();
+                ctx.translate(this.currentX, this.y);
+                ctx.rotate(this.rotation);
+
+                if (this.type === 'bubble') {
+                    // うるうるシャボン玉
+                    ctx.beginPath();
+                    ctx.arc(0, 0, this.size, 0, Math.PI * 2);
+                    let gradient = ctx.createRadialGradient(-this.size * 0.35, -this.size * 0.35, this.size * 0.05, 0, 0, this.size);
+                    gradient.addColorStop(0, 'rgba(255, 255, 255, 0.98)');
+                    gradient.addColorStop(0.25, this.color);
+                    gradient.addColorStop(0.75, 'rgba(255, 255, 255, 0.05)');
+                    gradient.addColorStop(1, 'rgba(255, 255, 255, 0.3)');
+                    
+                    ctx.fillStyle = gradient;
+                    ctx.strokeStyle = 'rgba(255, 255, 255, 0.45)';
+                    ctx.lineWidth = 1;
+                    ctx.stroke();
+                    ctx.fill();
+                } else if (this.type === 'star') {
+                    // 背景のゆっくり浮遊するお星様
+                    ctx.shadowBlur = 12;
+                    ctx.shadowColor = this.color;
+                    ctx.beginPath();
+                    for (let i = 0; i < 5; i++) {
+                        ctx.lineTo(0, -this.size * 0.8);
+                        ctx.lineTo(this.size * 0.22, -this.size * 0.22);
+                        ctx.rotate(Math.PI * 2 / 5);
+                    }
+                    ctx.closePath();
+                    ctx.fillStyle = this.color;
+                    ctx.globalAlpha = 0.55;
+                    ctx.fill();
+                } else if (this.type === 'moon') {
+                    // 背景のゆっくり浮遊するお月様
+                    ctx.shadowBlur = 12;
+                    ctx.shadowColor = this.color;
+                    ctx.globalAlpha = 0.55;
+                    ctx.beginPath();
+                    ctx.arc(-this.size * 0.3, 0, this.size * 0.8, -Math.PI/2, Math.PI/2);
+                    ctx.arc(-this.size * 0.1, 0, this.size * 0.6, Math.PI/2, -Math.PI/2, true);
+                    ctx.closePath();
+                    ctx.fillStyle = this.color;
+                    ctx.fill();
+                } else if (this.type === 'mini-ribbon') {
+                    // ゆっくりたゆたうミニリボン
+                    ctx.globalAlpha = 0.6;
+                    ctx.beginPath();
+                    // 左ループ
+                    ctx.bezierCurveTo(0, 0, -this.size, -this.size, -this.size, 0);
+                    ctx.bezierCurveTo(-this.size, this.size, 0, 0, 0, 0);
+                    // 右ループ
+                    ctx.bezierCurveTo(0, 0, this.size, -this.size, this.size, 0);
+                    ctx.bezierCurveTo(this.size, this.size, 0, 0, 0, 0);
+                    ctx.closePath();
+                    ctx.fillStyle = this.color;
+                    ctx.fill();
+                    // 中央の結び目
+                    ctx.beginPath();
+                    ctx.arc(0, 0, this.size * 0.2, 0, Math.PI*2);
+                    ctx.fillStyle = '#fff';
+                    ctx.fill();
+                } else if (this.type === 'mini-rainbow') {
+                    // ゆっくり漂うちいさな虹
+                    ctx.globalAlpha = 0.55;
+                    ctx.lineWidth = 3;
+                    ctx.strokeStyle = '#ff8a80';
+                    ctx.beginPath();
+                    ctx.arc(0, 0, this.size * 0.7, Math.PI, 0);
+                    ctx.stroke();
+                    ctx.strokeStyle = '#fff59d';
+                    ctx.beginPath();
+                    ctx.arc(0, 0, this.size * 0.5, Math.PI, 0);
+                    ctx.stroke();
+                    ctx.strokeStyle = '#80deea';
+                    ctx.beginPath();
+                    ctx.arc(0, 0, this.size * 0.3, Math.PI, 0);
+                    ctx.stroke();
+                }
+
+                ctx.restore();
+            }
+        }
+
+        class Dust {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2.5 + 0.8;
+                this.speedX = (Math.random() - 0.5) * 0.15;
+                this.speedY = -Math.random() * 0.1 - 0.05;
+                this.alpha = Math.random() * 0.5 + 0.2;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.y < -5) this.y = canvas.height + 5;
+                if (this.x < -5) this.x = canvas.width + 5;
+                if (this.x > canvas.width + 5) this.x = -5;
+            }
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.alpha;
+                ctx.fillStyle = '#fff';
+                ctx.shadowBlur = 6;
+                ctx.shadowColor = '#fff59d';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI*2);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        class Sparkle {
+            constructor(x, y, type) {
+                this.x = x;
+                this.y = y;
+                this.type = type || 'star';
+                this.size = Math.random() * 15 + 6;
+                this.speedX = (Math.random() - 0.5) * 7.5;
+                this.speedY = (Math.random() - 0.5) * 7.5 - 2.0;
+                this.gravity = 0.045;
+                this.color = currentPalette[Math.floor(Math.random() * currentPalette.length)];
+                this.alpha = 1;
+                this.decay = Math.random() * 0.015 + 0.008;
+                this.rotation = Math.random() * Math.PI * 2;
+                this.rotSpeed = (Math.random() - 0.5) * 0.15;
+            }
+
+            update() {
+                this.speedY += this.gravity;
+                this.x += this.speedX;
+                this.y += this.speedY;
+                this.alpha -= this.decay;
+                this.rotation += this.rotSpeed;
+            }
+
+            draw() {
+                if (this.alpha <= 0) return;
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.rotation);
+                ctx.globalAlpha = this.alpha;
+                ctx.shadowBlur = 12;
+                ctx.shadowColor = this.color;
+
+                if (this.type === 'star') {
+                    ctx.beginPath();
+                    for (let i = 0; i < 4; i++) {
+                        ctx.lineTo(0, -this.size);
+                        ctx.lineTo(this.size * 0.25, -this.size * 0.25);
+                        ctx.rotate(Math.PI / 2);
+                    }
+                    ctx.closePath();
+                    ctx.fillStyle = this.color;
+                    ctx.fill();
+                } else if (this.type === 'moon') {
+                    // もこもこベッドとお月様の簡易エフェクト
+                    ctx.beginPath();
+                    ctx.arc(-this.size*0.2, 0, this.size*0.6, -Math.PI/2, Math.PI/2);
+                    ctx.arc(0, 0, this.size*0.4, Math.PI/2, -Math.PI/2, true);
+                    ctx.closePath();
+                    ctx.fillStyle = this.color;
+                    ctx.fill();
+                    // 雲のおまけ
+                    ctx.beginPath();
+                    ctx.arc(this.size*0.3, this.size*0.3, this.size*0.3, 0, Math.PI*2);
+                    ctx.fillStyle = '#fff';
+                    ctx.fill();
+                } else if (this.type === 'heart') {
+                    ctx.beginPath();
+                    ctx.moveTo(0, this.size * 0.35);
+                    ctx.bezierCurveTo(-this.size * 0.75, -this.size * 0.3, -this.size * 0.75, -this.size, 0, -this.size * 0.4);
+                    ctx.bezierCurveTo(this.size * 0.75, -this.size, this.size * 0.75, -this.size * 0.3, 0, this.size * 0.35);
+                    ctx.fillStyle = this.color;
+                    ctx.fill();
+                } else if (this.type === 'bubble') {
+                    ctx.beginPath();
+                    ctx.arc(0, 0, this.size * 0.8, 0, Math.PI * 2);
+                    let grad = ctx.createRadialGradient(-this.size*0.2, -this.size*0.2, 1, 0, 0, this.size*0.8);
+                    grad.addColorStop(0, '#fff');
+                    grad.addColorStop(0.3, this.color);
+                    grad.addColorStop(1, 'transparent');
+                    ctx.fillStyle = grad;
+                    ctx.strokeStyle = 'rgba(255,255,255,0.7)';
+                    ctx.lineWidth = 1;
+                    ctx.fill();
+                    ctx.stroke();
+                } else if (this.type === 'ribbon') {
+                    ctx.beginPath();
+                    ctx.bezierCurveTo(0, 0, -this.size, -this.size * 0.8, -this.size, 0);
+                    ctx.bezierCurveTo(-this.size, this.size * 0.8, 0, 0, 0, 0);
+                    ctx.bezierCurveTo(0, 0, this.size, -this.size * 0.8, this.size, 0);
+                    ctx.bezierCurveTo(this.size, this.size * 0.8, 0, 0, 0, 0);
+                    ctx.closePath();
+                    ctx.fillStyle = this.color;
+                    ctx.fill();
+                    // たれの部分
+                    ctx.beginPath();
+                    ctx.moveTo(-2, 2);
+                    ctx.lineTo(-this.size * 0.6, this.size * 0.9);
+                    ctx.moveTo(2, 2);
+                    ctx.lineTo(this.size * 0.6, this.size * 0.9);
+                    ctx.strokeStyle = this.color;
+                    ctx.lineWidth = 2.5;
+                    ctx.stroke();
+                    // 結び目
+                    ctx.beginPath();
+                    ctx.arc(0, 0, this.size * 0.25, 0, Math.PI*2);
+                    ctx.fillStyle = '#fff';
+                    ctx.fill();
+                } else if (this.type === 'rainbow') {
+                    ctx.lineWidth = 2.5;
+                    ctx.strokeStyle = '#ff80ab';
+                    ctx.beginPath();
+                    ctx.arc(0, 0, this.size * 0.7, Math.PI, 0);
+                    ctx.stroke();
+                    ctx.strokeStyle = '#ffd54f';
+                    ctx.beginPath();
+                    ctx.arc(0, 0, this.size * 0.5, Math.PI, 0);
+                    ctx.stroke();
+                    ctx.strokeStyle = '#80deea';
+                    ctx.beginPath();
+                    ctx.arc(0, 0, this.size * 0.3, Math.PI, 0);
+                    ctx.stroke();
+                }
+
+                ctx.restore();
+            }
+        }
+
+        // 初期シャボン玉・リボンたちの作成（合計40個）
+        for (let i = 0; i < 40; i++) {
+            backgroundBubbles.push(new AmbientBubble());
+        }
+
+        // 光のダストパーティクル（50個）
+        for (let i = 0; i < 50; i++) {
+            airDusts.push(new Dust());
+        }
+
+        // インタラクション判定
+        function spawnSparkles(clientX, clientY) {
+            let effect = activeEffect;
+            if (effect === 'mix') {
+                const types = ['star', 'heart', 'bubble', 'moon', 'ribbon', 'rainbow'];
+                effect = types[Math.floor(Math.random() * types.length)];
+            } else if (effect === 'ribbon_rainbow') {
+                effect = Math.random() > 0.5 ? 'ribbon' : 'rainbow';
+            } else if (effect === 'star') {
+                effect = Math.random() > 0.3 ? 'star' : 'moon';
+            }
+            
+            const spawnCount = activeEffect === 'mix' ? 5 : 4;
+            for (let i = 0; i < spawnCount; i++) {
+                particles.push(new Sparkle(clientX, clientY, effect));
+            }
+            // 常にランダムで小さなリボンや虹をちょっとだけおまけ
+            if (Math.random() > 0.6) {
+                particles.push(new Sparkle(clientX, clientY, 'ribbon'));
+                particles.push(new Sparkle(clientX, clientY, 'rainbow'));
+            }
+
+            playMagicalChime();
+        }
+
+        // マウスクリック
+        interactionZone.addEventListener('mousedown', (e) => {
+            if (e.target.closest('.neon-capsule-bar') || e.target.closest('#controlPanel') || e.target.closest('#togglePanelBtn') || e.target.closest('button')) {
+                return;
+            }
+            spawnSparkles(e.clientX, e.clientY);
+            
+            function onMouseMove(moveEvent) {
+                spawnSparkles(moveEvent.clientX, moveEvent.clientY);
+            }
+            
+            window.addEventListener('mousemove', onMouseMove);
+            window.addEventListener('mouseup', () => {
+                window.removeEventListener('mousemove', onMouseMove);
+            }, { once: true });
+        });
+
+        // タッチイベント
+        interactionZone.addEventListener('touchstart', (e) => {
+            if (e.target.closest('.neon-capsule-bar') || e.target.closest('#controlPanel') || e.target.closest('#togglePanelBtn') || e.target.closest('button')) {
+                return;
+            }
+            e.preventDefault();
+            for (let i = 0; i < e.touches.length; i++) {
+                spawnSparkles(e.touches[i].clientX, e.touches[i].clientY);
+            }
+        });
+
+        interactionZone.addEventListener('touchmove', (e) => {
+            if (e.target.closest('.neon-capsule-bar') || e.target.closest('#controlPanel') || e.target.closest('#togglePanelBtn') || e.target.closest('button')) {
+                return;
+            }
+            e.preventDefault();
+            for (let i = 0; i < e.touches.length; i++) {
+                spawnSparkles(e.touches[i].clientX, e.touches[i].clientY);
+            }
+        });
+
+        // アニメーションループ
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // 1. 背景の光ダストの描画
+            airDusts.forEach(dust => {
+                dust.update();
+                dust.draw();
+            });
+
+            // 2. 常時漂うシャボン玉・星・リボンたちの描画
+            backgroundBubbles.forEach(bubble => {
+                bubble.update();
+                bubble.draw();
+            });
+
+            // 3. 弾け飛んだ各種エフェクトの描画
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const p = particles[i];
+                p.update();
+                p.draw();
+                if (p.alpha <= 0) {
+                    particles.splice(i, 1);
+                }
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        window.onload = function() {
+            animate();
+        };
+    </script>
+</body>
+</html>
