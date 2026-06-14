@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ふわふわどりーむ・ドリームシミュレーター</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -454,11 +454,12 @@
         <!-- インタラクティブなネオンカプセル型メッセージバー -->
         <div class="w-full max-w-sm mt-6 px-2">
             <div class="neon-capsule-bar flex items-center justify-between px-4 py-2.5 rounded-full backdrop-blur-md relative z-30">
+                <!-- iOSでの自動フォーカスズームを防ぐため、デフォルトの文字サイズを text-base (16px) に設定 -->
                 <input 
                     type="text" 
                     id="messageInput" 
                     placeholder="ふわふわメッセージを送る..." 
-                    class="bg-transparent text-purple-700 placeholder-purple-300 focus:outline-none w-full text-xs sm:text-sm font-semibold pr-2"
+                    class="bg-transparent text-purple-700 placeholder-purple-300 focus:outline-none w-full text-base sm:text-sm font-semibold pr-2"
                 />
                 <button 
                     onclick="sendBubbleMessage()" 
@@ -778,6 +779,7 @@
             wand: `<svg class="w-12 h-12" viewBox="0 0 100 100" style="transform: rotate(-10deg);">
                     <rect x="46" y="46" width="8" height="44" rx="4" fill="#f8bbd0" stroke="#d81b60" stroke-width="1.8" />
                     <path d="M50,42 C50,42 32,24 32,15 C32,5 45,5 50,15 C55,5 68,5 68,15 C68,24 50,42 50,42 Z" fill="#ff80ab" stroke="#d81b60" stroke-width="2" />
+                    <path d="M50,34 C50,34 38,22 38,16 C38,9 47,9 50,16 C53,9 62,9 62,16 C62,22 50,34 50,34 Z" fill="#fff" opacity="0.5" />
                     <g transform="translate(35, 38) scale(0.38)">
                         <path d="M10,20 C-10,0 -10,40 10,20 Z" fill="#ffe082" stroke="#ff8f00" stroke-width="2" />
                         <path d="M30,20 C50,0 50,40 30,20 Z" fill="#ffe082" stroke="#ff8f00" stroke-width="2" />
@@ -999,6 +1001,7 @@
             }
         }
 
+        // メロディの合成音作成
         function playMelodyTone(freq, startOffset) {
             if (!audioCtx) return;
             const startTime = audioCtx.currentTime + startOffset;
