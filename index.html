@@ -158,6 +158,12 @@
             display: none;
         }
 
+        /* スマホでの自動ズームとズレ対策 */
+        #messageInput {
+            font-size: 16px !important;
+            touch-action: manipulation;
+        }
+
         /* スタンプボタンのスタイリング */
         .stamp-tray {
             position: relative;
@@ -414,7 +420,7 @@
     <!-- メイン「ふわふわどりーむ」カードエリア -->
     <div class="z-20 my-auto flex flex-col items-center justify-center float-gentle max-w-full px-4 relative">
         
-        <!-- 浮かび上がるメッセージ吹き出しのコンテナ -->
+        <!-- 浮かび上がるメッセージ吹き出し of コンテナ -->
         <div id="bubbleContainer" class="absolute inset-0 pointer-events-none z-30 overflow-visible flex flex-col items-center justify-end"></div>
 
         <!-- 丸みをおびた極上ストーリーフレーム -->
@@ -454,71 +460,59 @@
         <!-- インタラクティブなネオンカプセル型メッセージバー -->
         <div class="w-full max-w-sm mt-6 px-2">
             <div class="neon-capsule-bar flex items-center justify-between px-4 py-2.5 rounded-full backdrop-blur-md relative z-30">
-                <!-- iOSでの自動フォーカスズームを防ぐため、デフォルトの文字サイズを text-base (16px) に設定 -->
+                <!-- iOSでの自動フォーカスズームを防ぐため、モバイルでも文字サイズを text-base (16px) で完全固定 -->
                 <input 
                     type="text" 
                     id="messageInput" 
                     placeholder="ふわふわメッセージを送る..." 
-                    class="bg-transparent text-purple-700 placeholder-purple-300 focus:outline-none w-full text-base sm:text-sm font-semibold pr-2"
+                    class="bg-transparent text-purple-700 placeholder-purple-300 focus:outline-none w-full text-base font-semibold pr-2"
                 />
                 <button 
                     onclick="sendBubbleMessage()" 
-                    class="bg-gradient-to-r from-pink-400 to-purple-400 hover:from-pink-500 hover:to-purple-500 text-white font-bold px-4 py-1.5 rounded-full text-xs sm:text-sm transition-all active:scale-95 shadow-sm"
+                    class="bg-gradient-to-r from-pink-400 to-purple-400 hover:from-pink-500 hover:to-purple-500 text-white font-bold px-4 py-1.5 rounded-full text-xs sm:text-sm transition-all active:scale-95 shadow-sm flex-shrink-0"
                 >
                     送信 ✨
                 </button>
             </div>
         </div>
 
-        <!-- クイックスタンプリアクション (ユニコーンから「夢色レインボー」へチェンジ！) -->
+        <!-- クイックスタンプリアクション -->
         <div class="stamp-tray flex space-x-2 mt-4 z-30 flex-wrap justify-center gap-y-2">
             
-            <!-- 🌈 夢色レインバースタンプ (パステルレインボー＆ふわふわ雲) -->
+            <!-- 🌈 夢色レインバースタンプ -->
             <button onclick="sendQuickStamp('rainbow_stamp')" class="stamp-btn p-1.5 rounded-full shadow-md w-11 h-11 flex items-center justify-center" title="虹">
                 <svg class="w-9 h-9" viewBox="0 0 100 100">
-                    <!-- レインボーアーチ -->
                     <path d="M15,62 A35,35 0 0,1 85,62" stroke="#ff8a80" stroke-width="5" stroke-linecap="round" fill="none" />
                     <path d="M22,62 A28,28 0 0,1 78,62" stroke="#fff59d" stroke-width="5" stroke-linecap="round" fill="none" />
                     <path d="M29,62 A21,21 0 0,1 71,62" stroke="#b2dfdb" stroke-width="5" stroke-linecap="round" fill="none" />
                     <path d="M36,62 A14,14 0 0,1 64,62" stroke="#e1bee7" stroke-width="5" stroke-linecap="round" fill="none" />
-                    <!-- 左のふわふわ雲 -->
                     <path d="M10,65 C10,56 22,53 28,60 C32,52 44,52 48,60 C51,56 58,56 58,65 Z" fill="#ffffff" opacity="0.95" />
                     <ellipse cx="20" cy="62" rx="2" ry="1.2" fill="#ff4081" opacity="0.3" />
-                    <!-- 右のふわふわ雲 -->
                     <path d="M42,65 C42,56 54,53 60,60 C64,52 76,52 80,60 C83,56 90,56 90,65 Z" fill="#ffffff" opacity="0.95" />
                     <ellipse cx="80" cy="62" rx="2" ry="1.2" fill="#ff4081" opacity="0.3" />
-                    <!-- ニコニコおめめ (左雲) -->
                     <path d="M22,57 Q25,54 28,57" stroke="#5d4037" stroke-width="1.5" fill="none" stroke-linecap="round" />
                     <path d="M34,57 Q37,54 40,57" stroke="#5d4037" stroke-width="1.5" fill="none" stroke-linecap="round" />
                     <path d="M30,60 Q31,62 32,60" stroke="#5d4037" stroke-width="1" fill="none" />
-                    <!-- ニコニコおめめ (右雲) -->
                     <path d="M54,57 Q57,54 60,57" stroke="#5d4037" stroke-width="1.5" fill="none" stroke-linecap="round" />
                     <path d="M66,57 Q69,54 72,57" stroke="#5d4037" stroke-width="1.5" fill="none" stroke-linecap="round" />
                     <path d="M62,60 Q63,62 64,60" stroke="#5d4037" stroke-width="1" fill="none" />
                 </svg>
             </button>
 
-            <!-- 🍹 メロディソーダスタンプ (パステルミント＆チェリー) -->
+            <!-- 🍹 メロディソーダスタンプ -->
             <button onclick="sendQuickStamp('pastel_soda')" class="stamp-btn p-1.5 rounded-full shadow-md w-11 h-11 flex items-center justify-center" title="パステルソーダ">
                 <svg class="w-9 h-9" viewBox="0 0 100 100">
-                    <!-- ストロー -->
                     <line x1="56" y1="44" x2="72" y2="12" stroke="#ff80ab" stroke-width="4.5" stroke-linecap="round" />
                     <line x1="61" y1="34" x2="72" y2="12" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" />
-                    <!-- グラス本体 -->
                     <path d="M30,32 L34,70 C35,78 65,78 66,70 L70,32 Z" fill="#e0f7fa" stroke="#4dd0e1" stroke-width="2.2" />
-                    <!-- ソーダドリンク部分 -->
                     <path d="M32,46 L34,70 C35,76 65,76 66,70 L68,46 Z" fill="#80deea" />
-                    <!-- 炭酸シュワシュワの泡 -->
                     <circle cx="38" cy="56" r="2.2" fill="#ffffff" opacity="0.8" />
                     <circle cx="60" cy="62" r="1.8" fill="#ffffff" opacity="0.8" />
                     <circle cx="45" cy="66" r="2.8" fill="#ffffff" opacity="0.9" />
                     <circle cx="52" cy="50" r="1.5" fill="#ffffff" opacity="0.7" />
-                    <!-- バニラアイス -->
                     <path d="M34,36 C34,22 66,22 66,36 Z" fill="#ffffff" />
-                    <!-- さくらんぼ -->
                     <circle cx="42" cy="24" r="6" fill="#ff4081" />
                     <path d="M42,20 C42,12 52,10 54,16" stroke="#81c784" stroke-width="1.5" fill="none" />
-                    <!-- ソーダのお顔 (超キュート) -->
                     <circle cx="44" cy="54" r="3" fill="#006064" />
                     <circle cx="56" cy="54" r="3" fill="#006064" />
                     <circle cx="43" cy="52.5" r="0.9" fill="#ffffff" />
@@ -572,7 +566,7 @@
             <!-- 🌟 きらきら星スタンプ -->
             <button onclick="sendQuickStamp('star_special')" class="stamp-btn p-1.5 rounded-full shadow-md w-11 h-11 flex items-center justify-center" title="きらきら星">
                 <svg class="w-9 h-9" viewBox="0 0 100 100">
-                    <path d="M50,10 L60,38 L88,38 L66,54 L74,82 L50,65 L26,82 L34,54 L12,38 L40,38 Z" fill="#ffe082" stroke="#ff8f00" stroke-width="2" stroke-linejoin="round" />
+                    <path d="M50,10 L58,38 L88,38 L66,54 L72,82 L50,65 L28,82 L36,54 L12,38 L42,38 Z" fill="#ffe082" stroke="#ff8f00" stroke-width="2" stroke-linejoin="round" />
                     <circle cx="42" cy="46" r="3.5" fill="#3e2723" />
                     <circle cx="41" cy="44.5" r="1" fill="#fff" />
                     <circle cx="58" cy="46" r="3.5" fill="#3e2723" />
