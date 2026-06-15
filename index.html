@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>ふわふわどりーむ・ドリームシミュレーター</title>
+    <title>ふわふわどりーむ・きらりん</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -16,7 +16,7 @@
             animation: gradientBG 20s ease infinite;
             overflow: hidden;
             transition: background 1s ease;
-            /* iOS等の不必要な画面バウンスを徹底的に防ぐための絶対固定 */
+            /* iOS等の入力時の画面の動き（自動スクロールやバウンス）を完全に防ぐための絶対固定 */
             position: fixed;
             top: 0;
             left: 0;
@@ -104,6 +104,24 @@
         @keyframes ribbonDrift2 {
             0%, 100% { transform: translateY(0px) translateX(0px) rotate(8deg); }
             50% { transform: translateY(-15px) translateX(-10px) rotate(-8deg); }
+        }
+
+        /* 雲のたゆたう動き */
+        .cloud-left {
+            animation: cloudMoveLeft 26s linear infinite;
+        }
+        .cloud-right {
+            animation: cloudMoveRight 30s linear infinite;
+        }
+        @keyframes cloudMoveLeft {
+            0% { transform: translateX(-8%); }
+            50% { transform: translateX(8%); }
+            100% { transform: translateX(-8%); }
+        }
+        @keyframes cloudMoveRight {
+            0% { transform: translateX(8%); }
+            50% { transform: translateX(-8%); }
+            100% { transform: translateX(8%); }
         }
 
         /* 画像を彩る魔法のオーラ */
@@ -482,7 +500,7 @@
                     <path d="M44,48 Q47,52 50,48" stroke="#5d4037" stroke-width="1.8" fill="none" stroke-linecap="round" />
                     <ellipse cx="42" cy="52" rx="3.5" ry="2" fill="#ff8a80" />
                     <g transform="translate(48, 50) scale(0.25)">
-                        <path d="M50,10 L60,38 L88,38 L66,54 L74,82 L50,65 L26,82 L34,54 L12,38 L40,38 Z" fill="#ff8a80" stroke="#ff1744" stroke-width="2" />
+                        <path d="M50,10 L58,38 L88,38 L64,54 L72,82 L50,65 L28,82 L36,54 L12,38 L42,38 Z" fill="#ff8a80" stroke="#ff1744" stroke-width="2" />
                     </g>
                 </svg>
             </button>
@@ -517,7 +535,7 @@
             <!-- 🌟 きらきら星スタンプ [ソ] -->
             <button onclick="sendQuickStamp('star_special')" class="stamp-btn p-1.5 rounded-full shadow-md w-11 h-11 flex items-center justify-center" title="ソ (星)">
                 <svg class="w-9 h-9" viewBox="0 0 100 100">
-                    <path d="M50,10 L58,38 L88,38 L66,54 L74,82 L50,65 L28,82 L36,54 L12,38 L42,38 Z" fill="#ffe082" stroke="#ff8f00" stroke-width="2" stroke-linejoin="round" />
+                    <path d="M50,10 L58,38 L88,38 L64,54 L72,82 L50,65 L28,82 L36,54 L12,38 L42,38 Z" fill="#ffe082" stroke="#fbc02d" stroke-width="2" />
                     <circle cx="42" cy="46" r="3.5" fill="#3e2723" />
                     <circle cx="41" cy="44.5" r="1" fill="#fff" />
                     <circle cx="58" cy="46" r="3.5" fill="#3e2723" />
@@ -714,7 +732,7 @@
                     </g>
                   </svg>`,
             star_special: `<svg class="w-12 h-12" viewBox="0 0 100 100">
-                    <path d="M50,10 L60,38 L88,38 L66,54 L74,82 L50,65 L28,82 L36,54 L12,38 L40,38 Z" fill="#ffe082" stroke="#ff8f00" stroke-width="2" />
+                    <path d="M50,10 L58,38 L88,38 L66,54 L74,82 L50,65 L28,82 L36,54 L12,38 L42,38 Z" fill="#ffe082" stroke="#fbc02d" stroke-width="2" />
                     <circle cx="42" cy="46" r="3.5" fill="#3e2723" />
                     <circle cx="58" cy="46" r="3.5" fill="#3e2723" />
                     <circle cx="34" cy="52" r="3" fill="#ff1744" opacity="0.6" />
@@ -828,7 +846,7 @@
             });
         }
 
-        // 画面中央の絵（ドリームコンテナ）がタップされたときの特別バースト
+        // 画面中央 of 絵（ドリームコンテナ）がタップされたときの特別バースト
         function burstDreamCard(clickX, clickY) {
             unlockAudioEngine();
             const rectCard = dreamContainer.getBoundingClientRect();
@@ -959,12 +977,12 @@
             }
         }
 
-        // メロディの合成音作成（画面タップ時の澄んだ美しいサイン波チャイム音に近づけました）
+        // メロディの合成音作成（画面タップ時の澄んだ美しいサイン波チャイム音）
         function playMelodyTone(freq, startOffset) {
             if (!audioCtx) return;
             const startTime = audioCtx.currentTime + startOffset;
             
-            // 澄んだサイン波のオシレーター（画面タッチ時playToneと同じ仕様）
+            // 澄んだサイン波のオシレーター
             const osc = audioCtx.createOscillator();
             const gainNode = audioCtx.createGain();
 
