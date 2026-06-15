@@ -16,7 +16,7 @@
             animation: gradientBG 20s ease infinite;
             overflow: hidden;
             transition: background 1s ease;
-            /* iOS等の入力時の画面の動き（自動スクロールやバウンス）を完全に防ぐための絶対固定 */
+            /* iOS等の不必要な画面バウンスを徹底的に防ぐための絶対固定 */
             position: fixed;
             top: 0;
             left: 0;
@@ -106,24 +106,6 @@
             50% { transform: translateY(-15px) translateX(-10px) rotate(-8deg); }
         }
 
-        /* 雲のたゆたう動き */
-        .cloud-left {
-            animation: cloudMoveLeft 26s linear infinite;
-        }
-        .cloud-right {
-            animation: cloudMoveRight 30s linear infinite;
-        }
-        @keyframes cloudMoveLeft {
-            0% { transform: translateX(-8%); }
-            50% { transform: translateX(8%); }
-            100% { transform: translateX(-8%); }
-        }
-        @keyframes cloudMoveRight {
-            0% { transform: translateX(8%); }
-            50% { transform: translateX(-8%); }
-            100% { transform: translateX(8%); }
-        }
-
         /* 画像を彩る魔法のオーラ */
         .glow-aura-card {
             box-shadow: 0 0 60px rgba(243, 229, 245, 0.8), 0 0 100px rgba(252, 228, 236, 0.6);
@@ -135,40 +117,21 @@
             50% { box-shadow: 0 0 80px rgba(244, 143, 177, 0.9), 0 0 130px rgba(224, 242, 241, 0.8); }
         }
 
-        /* カプセル型ネオンバー */
-        .neon-capsule-bar {
-            background: rgba(255, 255, 255, 0.8);
-            border: 2px solid rgba(225, 190, 231, 0.9);
-            box-shadow: 0 0 20px rgba(225, 190, 231, 0.7), inset 0 0 10px rgba(255, 255, 255, 0.6);
-            transition: all 0.3s ease;
-        }
-        .neon-capsule-bar:focus-within {
-            border-color: rgba(244, 143, 177, 0.9);
-            box-shadow: 0 0 30px rgba(244, 143, 177, 0.9), 0 4px 15px rgba(0, 0, 0, 0.05);
-            background: rgba(255, 255, 255, 0.95);
-        }
-
         /* ふわふわ浮かぶテキスト・スタンプ吹き出し */
         .bubble-msg {
             animation: bubbleUp 4.5s ease-out forwards;
         }
         @keyframes bubbleUp {
-            0% { transform: translateY(60px) scale(0.5) rotate(0deg); opacity: 0; }
+            0% { transform: translateY(0px) scale(0.5) rotate(0deg); opacity: 0; }
             10% { transform: translateY(0px) scale(1.15) rotate(6deg); opacity: 1; }
             15% { transform: scale(1) rotate(-6deg); }
             85% { opacity: 1; }
-            100% { transform: translateY(-320px) scale(0.6) rotate(25deg); opacity: 0; }
+            100% { transform: translateY(-380px) scale(0.6) rotate(25deg); opacity: 0; }
         }
 
         /* スクロールバー非表示 */
         ::-webkit-scrollbar {
             display: none;
-        }
-
-        /* スマホでの自動ズームとズレ対策 */
-        #messageInput {
-            font-size: 16px !important;
-            touch-action: manipulation;
         }
 
         /* スタンプボタンのスタイリング */
@@ -420,7 +383,7 @@
     <!-- UI情報パネル -->
     <div class="z-20 text-center mt-12 bg-white/70 backdrop-blur-md px-6 py-2.5 rounded-full border border-purple-200/50 shadow-md pointer-events-none">
         <p class="text-xs md:text-sm text-purple-600 font-bold tracking-wider">
-           ✨🪄 画面をタッチしたりスタンプをおすと、リボンや虹のシャワーがはじけるよ ✨🌙 
+           ✨🪄 画面や中央の絵をタッチ、または可愛いドレミスタンプを叩いてみてね ✨🌙 
         </p>
     </div>
 
@@ -464,30 +427,11 @@
             </div>
         </div>
 
-        <!-- インタラクティブなネオンカプセル型メッセージバー -->
-        <div class="w-full max-w-sm mt-6 px-2">
-            <div class="neon-capsule-bar flex items-center justify-between px-4 py-2.5 rounded-full backdrop-blur-md relative z-30">
-                <!-- iOSでの自動フォーカスズームを防ぐため、モバイルでも文字サイズを text-base (16px) で完全固定 -->
-                <input 
-                    type="text" 
-                    id="messageInput" 
-                    placeholder="ふわふわメッセージを送る..." 
-                    class="bg-transparent text-purple-700 placeholder-purple-300 focus:outline-none w-full text-base font-semibold pr-2"
-                />
-                <button 
-                    onclick="sendBubbleMessage()" 
-                    class="bg-gradient-to-r from-pink-400 to-purple-400 hover:from-pink-500 hover:to-purple-500 text-white font-bold px-4 py-1.5 rounded-full text-xs sm:text-sm transition-all active:scale-95 shadow-sm flex-shrink-0"
-                >
-                    送信 ✨
-                </button>
-            </div>
-        </div>
-
-        <!-- クイックスタンプリアクション -->
-        <div class="stamp-tray flex space-x-2 mt-4 z-30 flex-wrap justify-center gap-y-2">
+        <!-- クイックスタンプリアクション (ドレミファソラシド奏者) -->
+        <div class="stamp-tray flex space-x-2 mt-8 z-30 flex-wrap justify-center gap-y-2">
             
-            <!-- 🌈 夢色レインバースタンプ -->
-            <button onclick="sendQuickStamp('rainbow_stamp')" class="stamp-btn p-1.5 rounded-full shadow-md w-11 h-11 flex items-center justify-center" title="虹">
+            <!-- 🌈 夢色レインバースタンプ [ド] -->
+            <button onclick="sendQuickStamp('rainbow_stamp')" class="stamp-btn p-1.5 rounded-full shadow-md w-11 h-11 flex items-center justify-center" title="ド (虹)">
                 <svg class="w-9 h-9" viewBox="0 0 100 100">
                     <path d="M15,62 A35,35 0 0,1 85,62" stroke="#ff8a80" stroke-width="5" stroke-linecap="round" fill="none" />
                     <path d="M22,62 A28,28 0 0,1 78,62" stroke="#fff59d" stroke-width="5" stroke-linecap="round" fill="none" />
@@ -506,8 +450,8 @@
                 </svg>
             </button>
 
-            <!-- 🍹 メロディソーダスタンプ -->
-            <button onclick="sendQuickStamp('pastel_soda')" class="stamp-btn p-1.5 rounded-full shadow-md w-11 h-11 flex items-center justify-center" title="パステルソーダ">
+            <!-- 🍹 メロディソーダスタンプ [レ] -->
+            <button onclick="sendQuickStamp('pastel_soda')" class="stamp-btn p-1.5 rounded-full shadow-md w-11 h-11 flex items-center justify-center" title="レ (ソーダ)">
                 <svg class="w-9 h-9" viewBox="0 0 100 100">
                     <line x1="56" y1="44" x2="72" y2="12" stroke="#ff80ab" stroke-width="4.5" stroke-linecap="round" />
                     <line x1="61" y1="34" x2="72" y2="12" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" />
@@ -530,8 +474,8 @@
                 </svg>
             </button>
 
-            <!-- 🌙 お月様スタンプ -->
-            <button onclick="sendQuickStamp('moon')" class="stamp-btn p-1.5 rounded-full shadow-md w-11 h-11 flex items-center justify-center" title="お月様">
+            <!-- 🌙 お月様スタンプ [ミ] -->
+            <button onclick="sendQuickStamp('moon')" class="stamp-btn p-1.5 rounded-full shadow-md w-11 h-11 flex items-center justify-center" title="ミ (お月様)">
                 <svg class="w-9 h-9" viewBox="0 0 100 100">
                     <path d="M20,70 C15,65 15,55 25,52 C28,42 42,40 50,46 C58,38 72,40 78,50 C88,52 88,62 82,70 Z" fill="#fff" stroke="#90caf9" stroke-width="1.5" opacity="0.95" />
                     <path d="M40,25 A28,28 0 1,0 78,65 A22,22 0 1,1 40,25 Z" fill="#fff176" stroke="#fbc02d" stroke-width="2" stroke-linejoin="round" />
@@ -543,8 +487,8 @@
                 </svg>
             </button>
 
-            <!-- ☕ ココアカップスタンプ -->
-            <button onclick="sendQuickStamp('cup')" class="stamp-btn p-1.5 rounded-full shadow-md w-11 h-11 flex items-center justify-center" title="ココアカップ">
+            <!-- ☕ ココアカップスタンプ [ファ] -->
+            <button onclick="sendQuickStamp('cup')" class="stamp-btn p-1.5 rounded-full shadow-md w-11 h-11 flex items-center justify-center" title="ファ (ココア)">
                 <svg class="w-9 h-9" viewBox="0 0 100 100">
                     <rect x="25" y="46" width="50" height="36" rx="9" fill="#b39ddb" stroke="#7e57c2" stroke-width="2.5" />
                     <path d="M75,54 Q85,54 85,63 Q85,71 75,71" stroke="#7e57c2" stroke-width="2" fill="none" />
@@ -570,8 +514,8 @@
                 </svg>
             </button>
 
-            <!-- 🌟 きらきら星スタンプ -->
-            <button onclick="sendQuickStamp('star_special')" class="stamp-btn p-1.5 rounded-full shadow-md w-11 h-11 flex items-center justify-center" title="きらきら星">
+            <!-- 🌟 きらきら星スタンプ [ソ] -->
+            <button onclick="sendQuickStamp('star_special')" class="stamp-btn p-1.5 rounded-full shadow-md w-11 h-11 flex items-center justify-center" title="ソ (星)">
                 <svg class="w-9 h-9" viewBox="0 0 100 100">
                     <path d="M50,10 L58,38 L88,38 L66,54 L74,82 L50,65 L28,82 L36,54 L12,38 L42,38 Z" fill="#ffe082" stroke="#ff8f00" stroke-width="2" stroke-linejoin="round" />
                     <circle cx="42" cy="46" r="3.5" fill="#3e2723" />
@@ -584,8 +528,8 @@
                 </svg>
             </button>
 
-            <!-- 🪄 魔法のステッキスタンプ -->
-            <button onclick="sendQuickStamp('wand')" class="stamp-btn p-1.5 rounded-full shadow-md w-11 h-11 flex items-center justify-center" title="ステッキ">
+            <!-- 🪄 魔法のステッキスタンプ [ド] (オクターブ上) -->
+            <button onclick="sendQuickStamp('wand')" class="stamp-btn p-1.5 rounded-full shadow-md w-11 h-11 flex items-center justify-center" title="高いド (ステッキ)">
                 <svg class="w-9 h-9" viewBox="0 0 100 100" style="transform: rotate(-10deg);">
                     <rect x="46" y="46" width="8" height="44" rx="4" fill="#f8bbd0" stroke="#d81b60" stroke-width="1.8" />
                     <path d="M50,42 C50,42 32,24 32,15 C32,5 45,5 50,15 C55,5 68,5 68,15 C68,24 50,42 50,42 Z" fill="#ff80ab" stroke="#d81b60" stroke-width="2" />
@@ -598,8 +542,8 @@
                 </svg>
             </button>
 
-            <!-- 💖 ハートスタンプ -->
-            <button onclick="sendQuickStamp('heart_note')" class="stamp-btn p-1.5 rounded-full shadow-md w-11 h-11 flex items-center justify-center" title="ハート">
+            <!-- 💖 ハートスタンプ [ラ] -->
+            <button onclick="sendQuickStamp('heart_note')" class="stamp-btn p-1.5 rounded-full shadow-md w-11 h-11 flex items-center justify-center" title="ラ (ハート)">
                 <svg class="w-9 h-9" viewBox="0 0 100 100">
                     <path d="M50,78 C50,78 18,55 18,32 C18,17 36,12 50,29 C64,12 82,17 82,32 C82,55 50,78 50,78 Z" fill="#ff80ab" stroke="#d81b60" stroke-width="3" />
                     <path d="M38,31 C33,27 27,29 26,35" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity="0.8" />
@@ -611,8 +555,8 @@
                 </svg>
             </button>
 
-            <!-- 🎀 リボンスタンプ -->
-            <button onclick="sendQuickStamp('ribbon_note')" class="stamp-btn p-1.5 rounded-full shadow-md w-11 h-11 flex items-center justify-center" title="リボン">
+            <!-- 🎀 リボンスタンプ [シ] -->
+            <button onclick="sendQuickStamp('ribbon_note')" class="stamp-btn p-1.5 rounded-full shadow-md w-11 h-11 flex items-center justify-center" title="シ (リボン)">
                 <svg class="w-9 h-9" viewBox="0 0 100 100">
                     <path d="M48,48 C18,20 8,70 45,58 Z" fill="#ce93d8" stroke="#8e24aa" stroke-width="3" />
                     <path d="M52,48 C82,20 92,70 55,58 Z" fill="#80deea" stroke="#00acc1" stroke-width="3" />
@@ -694,7 +638,6 @@
         const togglePanelBtn = document.getElementById('togglePanelBtn');
         const controlPanel = document.getElementById('controlPanel');
         const arrowIcon = document.getElementById('arrowIcon');
-        const messageInput = document.getElementById('messageInput');
         const bubbleContainer = document.getElementById('bubbleContainer');
 
         let soundEnabled = true;
@@ -771,7 +714,7 @@
                     </g>
                   </svg>`,
             star_special: `<svg class="w-12 h-12" viewBox="0 0 100 100">
-                    <path d="M50,10 L60,38 L88,38 L66,54 L74,82 L50,65 L26,82 L34,54 L12,38 L40,38 Z" fill="#ffe082" stroke="#ff8f00" stroke-width="2" />
+                    <path d="M50,10 L60,38 L88,38 L66,54 L74,82 L50,65 L28,82 L36,54 L12,38 L40,38 Z" fill="#ffe082" stroke="#ff8f00" stroke-width="2" />
                     <circle cx="42" cy="46" r="3.5" fill="#3e2723" />
                     <circle cx="58" cy="46" r="3.5" fill="#3e2723" />
                     <circle cx="34" cy="52" r="3" fill="#ff1744" opacity="0.6" />
@@ -815,41 +758,11 @@
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
 
-        // パネルトグル
-        togglePanelBtn.addEventListener('click', () => {
-            const isHidden = controlPanel.classList.toggle('hidden');
-            arrowIcon.style.transform = isHidden ? 'rotate(0deg)' : 'rotate(180deg)';
-        });
-
-        // スマホで入力フィールドフォーカス時に画面の強制的なズレを防ぐ対策
-        // スクロール位置を常に最上部にロックし、バウンススクロールやリサイズ時のがたつきを完全に抑えます
-        function preventScreenMovement() {
-            window.scrollTo(0, 0);
-            document.body.scrollTop = 0;
-        }
-
-        messageInput.addEventListener('focus', () => {
-            setTimeout(preventScreenMovement, 50);
-            setTimeout(preventScreenMovement, 150);
-        });
-
-        messageInput.addEventListener('blur', () => {
-            setTimeout(preventScreenMovement, 50);
-        });
-
+        // スマホで画面が不意にスクロールしてズレるのを根本から防ぐ
         window.addEventListener('scroll', (e) => {
-            if (document.activeElement === messageInput) {
-                e.preventDefault();
-                preventScreenMovement();
-            }
+            e.preventDefault();
+            window.scrollTo(0, 0);
         }, { passive: false });
-
-        // キーボード「Enter」での送信
-        messageInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                sendBubbleMessage();
-            }
-        });
 
         // 音声エンジンの初期化と明示的なアンロック
         function initAudioContext() {
@@ -866,7 +779,7 @@
                     if (audioCtx.state === 'suspended') {
                         audioCtx.resume();
                     }
-                    // iOS制限を100%クリアするための無音ダミーバッファ生成と再生
+                    // iOS制限をクリアするための無音ダミー再生
                     const buffer = audioCtx.createBuffer(1, 1, 22050);
                     const source = audioCtx.createBufferSource();
                     source.buffer = buffer;
@@ -896,7 +809,7 @@
             }, 50);
         }
 
-        // あらゆるタッチ・クリック操作に反応してサウンドシステムをレジュームする
+        // タッチ操作に反応してサウンドシステムを解放
         ['touchstart', 'touchend', 'click', 'mousedown'].forEach(eventName => {
             document.addEventListener(eventName, () => {
                 if (soundEnabled) {
@@ -915,7 +828,7 @@
             });
         }
 
-        // 画面中央の絵（ドリームコンテナ）がタップ・クリックされたときの特別ド派手なバースト
+        // 画面中央の絵（ドリームコンテナ）がタップされたときの特別バースト
         function burstDreamCard(clickX, clickY) {
             unlockAudioEngine();
             const rectCard = dreamContainer.getBoundingClientRect();
@@ -936,14 +849,14 @@
 
             playMagicalChime();
             
-            // ちょっとした触感・押されたリアクションとしてカードを一瞬縮小させる
+            // カードを一瞬縮小させるポヨンとしたリアクション
             dreamContainer.style.transform = 'scale(0.96)';
             setTimeout(() => {
                 dreamContainer.style.transform = '';
             }, 150);
         }
 
-        // ドリームコンテナに直接クリック/タッチイベントを紐付け（確実に機能させます）
+        // ドリームコンテナに直接クリック/タッチイベントを紐付け
         dreamContainer.addEventListener('mousedown', (e) => {
             e.stopPropagation(); // 重複タップ感知を防止
             burstDreamCard(e.clientX, e.clientY);
@@ -954,51 +867,6 @@
             const touch = e.touches[0];
             burstDreamCard(touch.clientX, touch.clientY);
         }, { passive: true });
-
-        // メッセージ吹き出しの送信処理
-        function sendBubbleMessage() {
-            const text = messageInput.value.trim();
-            if (!text) return;
-
-            const bubble = document.createElement('div');
-            bubble.className = "bubble-msg absolute bg-white/90 border-2 border-pink-200/60 text-purple-700 font-bold px-4 py-2 rounded-2xl shadow-md text-xs sm:text-sm whitespace-nowrap z-50 pointer-events-none flex items-center space-x-1.5";
-            
-            const decors = ['🎀', '🌈', '🦄', '🍹', '🪄', '🍭', '🍬', '☁️', '⭐', '🌙'];
-            const decor = decors[Math.floor(Math.random() * decors.length)];
-            bubble.innerHTML = `<span>${decor}</span> <span>${text}</span>`;
-            
-            const randomX = (Math.random() - 0.5) * 220;
-            bubble.style.left = `calc(50% + ${randomX}px)`;
-            bubble.style.bottom = '80px';
-
-            bubbleContainer.appendChild(bubble);
-
-            setTimeout(() => {
-                bubble.remove();
-            }, 4500);
-
-            // 送信と同時にキラキラパーティクルをド派手に広範囲で弾けさせる
-            const rectInput = messageInput.getBoundingClientRect();
-            const rectCard = dreamContainer.getBoundingClientRect();
-            
-            // 発生スポットのリスト（対象箇所をより増やしました）
-            const spots = [
-                { x: rectInput.left + rectInput.width/2, y: rectInput.top },
-                { x: rectCard.left + rectCard.width/2, y: rectCard.top + rectCard.height/2 },
-                { x: rectCard.left, y: rectCard.bottom },
-                { x: rectCard.right, y: rectCard.bottom },
-                { x: rectCard.left, y: rectCard.top },
-                { x: rectCard.right, y: rectCard.top },
-                { x: Math.random() * window.innerWidth, y: 100 },
-                { x: Math.random() * window.innerWidth, y: window.innerHeight - 100 }
-            ];
-
-            const effectTypes = ['heart', 'star', 'bubble', 'ribbon', 'rainbow'];
-            burstSparklesAtMultipleSpots(spots, effectTypes, 12); // さらに大ボリュームに強化
-
-            messageInput.value = '';
-            playMagicalChime();
-        }
 
         // クイックスタンプ送信
         function sendQuickStamp(stampKey) {
@@ -1013,8 +881,7 @@
 
             const randomX = (Math.random() - 0.5) * 200;
             bubble.style.left = `calc(50% + ${randomX}px)`;
-            bubble.style.bottom = '80px';
-
+            bubble.style.bottom = '100px';
             bubbleContainer.appendChild(bubble);
 
             setTimeout(() => {
@@ -1092,53 +959,28 @@
             }
         }
 
-        // メロディの合成音作成
+        // メロディの合成音作成（画面タップ時の澄んだ美しいサイン波チャイム音に近づけました）
         function playMelodyTone(freq, startOffset) {
             if (!audioCtx) return;
             const startTime = audioCtx.currentTime + startOffset;
-            const partials = [
-                { ratio: 1, gain: 0.12, type: 'sine', length: 0.55 },
-                { ratio: 2, gain: 0.035, type: 'triangle', length: 0.38 },
-                { ratio: 3, gain: 0.018, type: 'sine', length: 0.28 }
-            ];
+            
+            // 澄んだサイン波のオシレーター（画面タッチ時playToneと同じ仕様）
+            const osc = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
 
-            partials.forEach((partial) => {
-                const osc = audioCtx.createOscillator();
-                const gainNode = audioCtx.createGain();
-                const endTime = startTime + partial.length;
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, startTime);
 
-                osc.type = partial.type;
-                osc.frequency.setValueAtTime(freq * partial.ratio, startTime);
-                osc.frequency.exponentialRampToValueAtTime(freq * partial.ratio * 1.008, startTime + 0.08);
+            // 画面をタッチした時と同様の、非常にクリアできれいなアタック＆減衰エンベロープ
+            gainNode.gain.setValueAtTime(0, startTime);
+            gainNode.gain.linearRampToValueAtTime(0.12, startTime + 0.04);
+            gainNode.gain.exponentialRampToValueAtTime(0.001, startTime + 0.9);
 
-                gainNode.gain.setValueAtTime(0.001, startTime);
-                gainNode.gain.linearRampToValueAtTime(partial.gain, startTime + 0.018);
-                gainNode.gain.exponentialRampToValueAtTime(0.001, endTime);
+            osc.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
 
-                osc.connect(gainNode);
-                gainNode.connect(audioCtx.destination);
-                osc.start(startTime);
-                osc.stop(endTime + 0.03);
-            });
-
-            const sparkleDelay = 0.055;
-            const sparkle = audioCtx.createOscillator();
-            const sparkleGain = audioCtx.createGain();
-            const sparkleStart = startTime + sparkleDelay;
-            const sparkleEnd = sparkleStart + 0.18;
-
-            sparkle.type = 'sine';
-            sparkle.frequency.setValueAtTime(freq * 4, sparkleStart);
-            sparkle.frequency.exponentialRampToValueAtTime(freq * 5.02, sparkleEnd);
-
-            sparkleGain.gain.setValueAtTime(0.001, sparkleStart);
-            sparkleGain.gain.linearRampToValueAtTime(0.028, sparkleStart + 0.012);
-            sparkleGain.gain.exponentialRampToValueAtTime(0.001, sparkleEnd);
-
-            sparkle.connect(sparkleGain);
-            sparkleGain.connect(audioCtx.destination);
-            sparkle.start(sparkleStart);
-            sparkle.stop(sparkleEnd + 0.02);
+            osc.start(startTime);
+            osc.stop(startTime + 1.0);
         }
 
         function playTone(delayMs) {
@@ -1506,7 +1348,7 @@
 
         // マウスクリック
         interactionZone.addEventListener('mousedown', (e) => {
-            if (e.target.closest('.neon-capsule-bar') || e.target.closest('#controlPanel') || e.target.closest('#togglePanelBtn') || e.target.closest('button') || e.target.closest('#dreamContainer')) {
+            if (e.target.closest('#controlPanel') || e.target.closest('#togglePanelBtn') || e.target.closest('button') || e.target.closest('#dreamContainer')) {
                 return;
             }
             spawnSparkles(e.clientX, e.clientY);
@@ -1523,7 +1365,7 @@
 
         // タッチイベント (スマホ・タブレット対応)
         interactionZone.addEventListener('touchstart', (e) => {
-            if (e.target.closest('.neon-capsule-bar') || e.target.closest('#controlPanel') || e.target.closest('#togglePanelBtn') || e.target.closest('button') || e.target.closest('#dreamContainer')) {
+            if (e.target.closest('#controlPanel') || e.target.closest('#togglePanelBtn') || e.target.closest('button') || e.target.closest('#dreamContainer')) {
                 return;
             }
             unlockAudioEngine(); // タッチの瞬間に確実にオーディオシステムを解放
@@ -1534,7 +1376,7 @@
 
         // スライド中はスクロールを止めてキラキラを出し続ける
         interactionZone.addEventListener('touchmove', (e) => {
-            if (e.target.closest('.neon-capsule-bar') || e.target.closest('#controlPanel') || e.target.closest('#togglePanelBtn') || e.target.closest('button') || e.target.closest('#dreamContainer')) {
+            if (e.target.closest('#controlPanel') || e.target.closest('#togglePanelBtn') || e.target.closest('button') || e.target.closest('#dreamContainer')) {
                 return;
             }
             if (e.cancelable) {
