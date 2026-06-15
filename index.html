@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>ふわふわどりーむ・ドリームシミュレーター</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -16,6 +16,13 @@
             animation: gradientBG 20s ease infinite;
             overflow: hidden;
             transition: background 1s ease;
+            /* iOS等の入力時の画面の動き（自動スクロールやバウンス）を完全に防ぐための絶対固定 */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overscroll-behavior: none; /* 引っ張りスクロールをブラウザレベルで無効化 */
         }
 
         @keyframes gradientBG {
@@ -266,11 +273,11 @@
             display: none;
         }
         .stamp-tray .stamp-btn:nth-of-type(1)::after { content: ""; }
-        /* 🌈 夢色レインボー用：ふんわりピンクから淡いイエロー、スカイブルーへの鮮やかグラデーション */
+        /* 🌈 夢色レインボー用 */
         .stamp-tray .stamp-btn:nth-of-type(1) { background: radial-gradient(circle at 32% 22%, #fff 0 10px, transparent 11px), linear-gradient(145deg, #ffebee, #fffde7, #e0f7fa); }
         
         .stamp-tray .stamp-btn:nth-of-type(2)::after { content: ""; }
-        /* 🍹 メロディソーダ用：爽快なアクアスカイミント */
+        /* 🍹 メロディソーダ用 */
         .stamp-tray .stamp-btn:nth-of-type(2) { background: radial-gradient(circle at 32% 22%, #fff 0 10px, transparent 11px), linear-gradient(145deg, #e0f7fa, #b2ebf2); }
         
         .stamp-tray .stamp-btn:nth-of-type(3)::after { content: ""; }
@@ -423,8 +430,8 @@
         <!-- 浮かび上がるメッセージ吹き出し of コンテナ -->
         <div id="bubbleContainer" class="absolute inset-0 pointer-events-none z-30 overflow-visible flex flex-col items-center justify-end"></div>
 
-        <!-- 丸みをおびた極上ストーリーフレーム -->
-        <div id="dreamContainer" class="relative w-80 h-80 sm:w-96 sm:h-96 md:w-[450px] md:h-[450px] flex items-center justify-center rounded-3xl overflow-hidden glow-aura-card bg-white/30 p-2 border-4 border-white/60 transition-all duration-700">
+        <!-- 丸みをおびた極上ストーリーフレーム (ポインターイベントを通して中の画像タッチ時にもバーストを起こすため相対配置をキープ) -->
+        <div id="dreamContainer" class="relative w-80 h-80 sm:w-96 sm:h-96 md:w-[450px] md:h-[450px] flex items-center justify-center rounded-3xl overflow-hidden glow-aura-card bg-white/30 p-2 border-4 border-white/60 transition-all duration-700 cursor-pointer z-20">
             
             <!-- カード周囲を飾るお供リボンと虹たち -->
             <div class="absolute -left-5 -top-5 z-20 w-12 h-12 sway-slow pointer-events-none">
@@ -441,12 +448,12 @@
                 </svg>
             </div>
 
-            <!-- insuta.png メイン画像 -->
+            <!-- insuta.png メイン画像 (ポインターイベントを受け取るため select-none のみにして pointer-events-none は除去) -->
             <img 
                 id="mainImage"
                 src="insuta.png" 
                 alt="ふわふわどりーむ" 
-                class="w-full h-full object-cover rounded-2xl select-none pointer-events-none transition-all duration-700"
+                class="w-full h-full object-cover rounded-2xl select-none transition-all duration-700"
                 onerror="handleImageError()"
             />
 
@@ -566,7 +573,7 @@
             <!-- 🌟 きらきら星スタンプ -->
             <button onclick="sendQuickStamp('star_special')" class="stamp-btn p-1.5 rounded-full shadow-md w-11 h-11 flex items-center justify-center" title="きらきら星">
                 <svg class="w-9 h-9" viewBox="0 0 100 100">
-                    <path d="M50,10 L58,38 L88,38 L66,54 L72,82 L50,65 L28,82 L36,54 L12,38 L42,38 Z" fill="#ffe082" stroke="#ff8f00" stroke-width="2" stroke-linejoin="round" />
+                    <path d="M50,10 L58,38 L88,38 L66,54 L74,82 L50,65 L28,82 L36,54 L12,38 L42,38 Z" fill="#ffe082" stroke="#ff8f00" stroke-width="2" stroke-linejoin="round" />
                     <circle cx="42" cy="46" r="3.5" fill="#3e2723" />
                     <circle cx="41" cy="44.5" r="1" fill="#fff" />
                     <circle cx="58" cy="46" r="3.5" fill="#3e2723" />
@@ -814,6 +821,29 @@
             arrowIcon.style.transform = isHidden ? 'rotate(0deg)' : 'rotate(180deg)';
         });
 
+        // スマホで入力フィールドフォーカス時に画面の強制的なズレを防ぐ対策
+        // スクロール位置を常に最上部にロックし、バウンススクロールやリサイズ時のがたつきを完全に抑えます
+        function preventScreenMovement() {
+            window.scrollTo(0, 0);
+            document.body.scrollTop = 0;
+        }
+
+        messageInput.addEventListener('focus', () => {
+            setTimeout(preventScreenMovement, 50);
+            setTimeout(preventScreenMovement, 150);
+        });
+
+        messageInput.addEventListener('blur', () => {
+            setTimeout(preventScreenMovement, 50);
+        });
+
+        window.addEventListener('scroll', (e) => {
+            if (document.activeElement === messageInput) {
+                e.preventDefault();
+                preventScreenMovement();
+            }
+        }, { passive: false });
+
         // キーボード「Enter」での送信
         messageInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
@@ -875,6 +905,56 @@
             }, { once: false, passive: true });
         });
 
+        // 指定された複数座標（スポット）にキラキラエフェクトを発生させるヘルパー
+        function burstSparklesAtMultipleSpots(spots, types, countPerSpot) {
+            spots.forEach(spot => {
+                for (let i = 0; i < countPerSpot; i++) {
+                    const randomType = types[Math.floor(Math.random() * types.length)];
+                    particles.push(new Sparkle(spot.x, spot.y, randomType));
+                }
+            });
+        }
+
+        // 画面中央の絵（ドリームコンテナ）がタップ・クリックされたときの特別ド派手なバースト
+        function burstDreamCard(clickX, clickY) {
+            unlockAudioEngine();
+            const rectCard = dreamContainer.getBoundingClientRect();
+
+            // カードが押されたとき用の座標スポットリスト（タップ場所・中心・四隅・および周囲へ散布）
+            const spots = [
+                { x: clickX, y: clickY }, // 直接タップした座標
+                { x: rectCard.left + rectCard.width / 2, y: rectCard.top + rectCard.height / 2 }, // 中心
+                { x: rectCard.left + 20, y: rectCard.top + 20 }, // 四隅
+                { x: rectCard.right - 20, y: rectCard.top + 20 },
+                { x: rectCard.left + 20, y: rectCard.bottom - 20 },
+                { x: rectCard.right - 20, y: rectCard.bottom - 20 },
+                { x: Math.random() * window.innerWidth, y: Math.random() * (window.innerHeight - 150) } // 画面ランダム
+            ];
+
+            const effectTypes = ['heart', 'star', 'bubble', 'ribbon', 'rainbow', 'moon'];
+            burstSparklesAtMultipleSpots(spots, effectTypes, 12); // 合計80個以上の超ド派手バースト！
+
+            playMagicalChime();
+            
+            // ちょっとした触感・押されたリアクションとしてカードを一瞬縮小させる
+            dreamContainer.style.transform = 'scale(0.96)';
+            setTimeout(() => {
+                dreamContainer.style.transform = '';
+            }, 150);
+        }
+
+        // ドリームコンテナに直接クリック/タッチイベントを紐付け（確実に機能させます）
+        dreamContainer.addEventListener('mousedown', (e) => {
+            e.stopPropagation(); // 重複タップ感知を防止
+            burstDreamCard(e.clientX, e.clientY);
+        });
+
+        dreamContainer.addEventListener('touchstart', (e) => {
+            e.stopPropagation();
+            const touch = e.touches[0];
+            burstDreamCard(touch.clientX, touch.clientY);
+        }, { passive: true });
+
         // メッセージ吹き出しの送信処理
         function sendBubbleMessage() {
             const text = messageInput.value.trim();
@@ -897,15 +977,24 @@
                 bubble.remove();
             }, 4500);
 
-            // 送信と同時にキラキラパーティクルをド派手に弾けさせる
-            const rect = messageInput.getBoundingClientRect();
-            for (let i = 0; i < 20; i++) {
-                particles.push(new Sparkle(rect.left + rect.width/2, rect.top, 'heart'));
-                particles.push(new Sparkle(rect.left + rect.width/2, rect.top, 'star'));
-                particles.push(new Sparkle(rect.left + rect.width/2, rect.top, 'bubble'));
-                particles.push(new Sparkle(rect.left + rect.width/2, rect.top, 'ribbon'));
-                particles.push(new Sparkle(rect.left + rect.width/2, rect.top, 'rainbow'));
-            }
+            // 送信と同時にキラキラパーティクルをド派手に広範囲で弾けさせる
+            const rectInput = messageInput.getBoundingClientRect();
+            const rectCard = dreamContainer.getBoundingClientRect();
+            
+            // 発生スポットのリスト（対象箇所をより増やしました）
+            const spots = [
+                { x: rectInput.left + rectInput.width/2, y: rectInput.top },
+                { x: rectCard.left + rectCard.width/2, y: rectCard.top + rectCard.height/2 },
+                { x: rectCard.left, y: rectCard.bottom },
+                { x: rectCard.right, y: rectCard.bottom },
+                { x: rectCard.left, y: rectCard.top },
+                { x: rectCard.right, y: rectCard.top },
+                { x: Math.random() * window.innerWidth, y: 100 },
+                { x: Math.random() * window.innerWidth, y: window.innerHeight - 100 }
+            ];
+
+            const effectTypes = ['heart', 'star', 'bubble', 'ribbon', 'rainbow'];
+            burstSparklesAtMultipleSpots(spots, effectTypes, 12); // さらに大ボリュームに強化
 
             messageInput.value = '';
             playMagicalChime();
@@ -932,14 +1021,22 @@
                 bubble.remove();
             }, 4500);
 
-            // リアクションエフェクト増量
-            const rect = document.getElementById('dreamContainer').getBoundingClientRect();
-            for (let i = 0; i < 12; i++) {
-                particles.push(new Sparkle(rect.left + rect.width/2 + randomX, rect.bottom - 40, 'star'));
-                particles.push(new Sparkle(rect.left + rect.width/2 + randomX, rect.bottom - 40, 'bubble'));
-                particles.push(new Sparkle(rect.left + rect.width/2 + randomX, rect.bottom - 40, 'ribbon'));
-                particles.push(new Sparkle(rect.left + rect.width/2 + randomX, rect.bottom - 40, 'rainbow'));
-            }
+            // スタンプリアクションエフェクトを大幅に豪華化（対象箇所をさらに拡散）
+            const rectCard = dreamContainer.getBoundingClientRect();
+            
+            const spots = [
+                { x: rectCard.left + rectCard.width/2 + randomX, y: rectCard.bottom - 40 }, // 吹き出し開始点
+                { x: rectCard.left + rectCard.width/2, y: rectCard.top + rectCard.height/2 }, // カード中心
+                { x: rectCard.left, y: rectCard.top }, // カード四隅
+                { x: rectCard.right, y: rectCard.top },
+                { x: rectCard.left, y: rectCard.bottom },
+                { x: rectCard.right, y: rectCard.bottom },
+                { x: Math.random() * window.innerWidth, y: Math.random() * window.innerHeight }, // ランダム画面位置1
+                { x: Math.random() * window.innerWidth, y: Math.random() * window.innerHeight }  // ランダム画面位置2
+            ];
+
+            const effectTypes = ['star', 'bubble', 'ribbon', 'rainbow', 'moon', 'heart'];
+            burstSparklesAtMultipleSpots(spots, effectTypes, 10); 
 
             playStampNote(stampKey);
         }
@@ -1409,7 +1506,7 @@
 
         // マウスクリック
         interactionZone.addEventListener('mousedown', (e) => {
-            if (e.target.closest('.neon-capsule-bar') || e.target.closest('#controlPanel') || e.target.closest('#togglePanelBtn') || e.target.closest('button')) {
+            if (e.target.closest('.neon-capsule-bar') || e.target.closest('#controlPanel') || e.target.closest('#togglePanelBtn') || e.target.closest('button') || e.target.closest('#dreamContainer')) {
                 return;
             }
             spawnSparkles(e.clientX, e.clientY);
@@ -1426,7 +1523,7 @@
 
         // タッチイベント (スマホ・タブレット対応)
         interactionZone.addEventListener('touchstart', (e) => {
-            if (e.target.closest('.neon-capsule-bar') || e.target.closest('#controlPanel') || e.target.closest('#togglePanelBtn') || e.target.closest('button')) {
+            if (e.target.closest('.neon-capsule-bar') || e.target.closest('#controlPanel') || e.target.closest('#togglePanelBtn') || e.target.closest('button') || e.target.closest('#dreamContainer')) {
                 return;
             }
             unlockAudioEngine(); // タッチの瞬間に確実にオーディオシステムを解放
@@ -1437,7 +1534,7 @@
 
         // スライド中はスクロールを止めてキラキラを出し続ける
         interactionZone.addEventListener('touchmove', (e) => {
-            if (e.target.closest('.neon-capsule-bar') || e.target.closest('#controlPanel') || e.target.closest('#togglePanelBtn') || e.target.closest('button')) {
+            if (e.target.closest('.neon-capsule-bar') || e.target.closest('#controlPanel') || e.target.closest('#togglePanelBtn') || e.target.closest('button') || e.target.closest('#dreamContainer')) {
                 return;
             }
             if (e.cancelable) {
@@ -1452,7 +1549,7 @@
         function animate() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // 1. 背景の光ダストの描画
+            // 1. 背景 of 光ダストの描画
             airDusts.forEach(dust => {
                 dust.update();
                 dust.draw();
